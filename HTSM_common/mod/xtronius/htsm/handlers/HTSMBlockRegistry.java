@@ -16,7 +16,7 @@ public class HTSMBlockRegistry {
 			regBlockAuto(block, name);
 		}
 		
-		regBlockMan();
+		regBlockManual();
 	}
 
 	private void regBlockAuto(Block block, String name) {	
@@ -25,5 +25,7 @@ public class HTSMBlockRegistry {
 		GameRegistry.addShapelessRecipe(new ItemStack(block, 64), new ItemStack(Blocks.dirt));
 	}
 	
-	private void regBlockMan() {}
+	private void regBlockManual() {
+//		GameRegistry.registerTileEntity(TileEntityExample.class, "BlockExample");
+	}
 }
