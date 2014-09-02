@@ -1,7 +1,8 @@
 package mod.xtronius.htsm.handlers;
 
 import mod.xtronius.htsm.block.BlockIDs;
-import mod.xtronius.htsm.block.HTSMBlock;
+import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.item.ItemIDs;
 import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
@@ -13,10 +14,10 @@ public class HTSMIDHandler {
         int idI = 20000;
         int idB = 2750;
         int idGui = 1;
+
         
-//		  BlockIDs.airID = config.get("AirID", "AirID", idB++).getInt();
-        
-        for(String name : HTSMBlock.blockNames) { BlockIDs.setBlockID(name, config.get(name + "ID", name + "ID", idB++).getInt()); }
+        for(String name : HTSM.blockInit.blockNames) BlockIDs.setBlockID(name, config.get("BlockIDs", name + "ID", idB++).getInt());  
+        for(String name : HTSM.itemInit.itemNames) ItemIDs.setItemID(name, config.get("ItemIDs", name + "ID", idI++).getInt()); 
 		  
 		  config.save();
 	}

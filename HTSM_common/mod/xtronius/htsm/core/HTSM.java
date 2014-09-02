@@ -1,6 +1,5 @@
 package mod.xtronius.htsm.core;
 
-import mod.xtronius.htsm.block.HTSMBlock;
 import mod.xtronius.htsm.handlers.HTSMBlockInitializer;
 import mod.xtronius.htsm.handlers.HTSMBlockRegistry;
 import mod.xtronius.htsm.handlers.HTSMIDHandler;
@@ -30,18 +29,23 @@ public class HTSM {
 	@Instance(Reference.MOD_ID)
 	public static HTSM instance;
 	
-	
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	
 	public static CommonProxy proxy;
+	public static HTSMBlockInitializer blockInit = HTSMBlockInitializer.instance;
+	public static HTSMItemInitializer itemInit = HTSMItemInitializer.instance;
 	
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 		
-		new HTSMBlock();
 		new HTSMBlockInitializer();
+		new HTSMItemInitializer();
 		HTSMIDHandler.RegConfigIDs(event);
-		new HTSMItemInitializer();	
+		
+		for(String name : blockInit.blockNames)
+			blockInit.addToBlockReg(name);
+		for(String name : itemInit.itemNames)
+			itemInit.addToItemReg(name);	
     }   
     
 	@EventHandler
@@ -58,8 +62,7 @@ public class HTSM {
     }
     
     @EventHandler
-    public void serverStart(FMLServerStartingEvent event)
-    {
+    public void serverStart(FMLServerStartingEvent event) {
     	 MinecraftServer server = MinecraftServer.getServer();
     	 ICommandManager command = server.getCommandManager();
     	 ServerCommandManager manager = (ServerCommandManager) command;

@@ -3,8 +3,6 @@ package mod.xtronius.htsm.block;
 import java.util.HashMap;
 
 public class BlockIDs {
-
-	//public static int airID;
 	
 	private static HashMap<String, Integer> blockIDs = new HashMap<String, Integer>();
 	

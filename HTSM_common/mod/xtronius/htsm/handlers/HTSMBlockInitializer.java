@@ -1,23 +1,33 @@
 package mod.xtronius.htsm.handlers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import mod.xtronius.htsm.block.BlockIDs;
-import mod.xtronius.htsm.block.HTSMBlock;
+import mod.xtronius.htsm.block.*;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 
 public class HTSMBlockInitializer {
 	
-	private HashMap<String, Block> blocks = new HashMap<String, Block>();
+	public static ArrayList<String> blockNames = new ArrayList<String>();
+	public static HashMap<String, Block> blocks = new HashMap<String, Block>();
+	
+	public static HTSMBlockInitializer instance;
 
 	public HTSMBlockInitializer() {
-		//blockRegistry.addObject(0, "air", (new BlockAir()).setBlockName("air"));
-		//Block.blockRegistry.addObject(BlockIDs.BlockWood2ID, "BlockWood2", Blocks.Wood2);
+		instance = this;
+		init();
 	}
 	
-	private void intitializeBlock(String name) { 
-		Block.blockRegistry.addObject(BlockIDs.getBlockID(name), name, HTSMBlock.blocks.get(name));
+	private void init() {}
+	
+	private void addBlock(Block block, String name) { 
+		block.setBlockName(name); 
+		BlockIDs.genNewBlockIDObj(name); 
+		blockNames.add(name); 
+		blocks.put(name, block); 
 	}
 	
-	private void addBlock(String name) { blocks.put(name, null);}
+	public static void addToBlockReg(String name) { Block.blockRegistry.addObject(BlockIDs.getBlockID(name), name, blocks.get(name)); }
 }
