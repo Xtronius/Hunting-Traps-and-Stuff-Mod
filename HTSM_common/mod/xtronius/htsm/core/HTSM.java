@@ -1,7 +1,9 @@
 package mod.xtronius.htsm.core;
 
+import mod.xtronius.htsm.handlers.GuiHandler;
 import mod.xtronius.htsm.handlers.HTSMBlockInitializer;
 import mod.xtronius.htsm.handlers.HTSMBlockRegistry;
+import mod.xtronius.htsm.handlers.HTSMEventInitializer;
 import mod.xtronius.htsm.handlers.HTSMIDHandler;
 import mod.xtronius.htsm.handlers.HTSMItemInitializer;
 import mod.xtronius.htsm.handlers.HTSMItemRegistry;
@@ -18,6 +20,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
@@ -45,14 +48,16 @@ public class HTSM {
 		for(String name : blockInit.blockNames)
 			blockInit.addToBlockReg(name);
 		for(String name : itemInit.itemNames)
-			itemInit.addToItemReg(name);	
+			itemInit.addToItemReg(name);
+		
+		new HTSMEventInitializer();
     }   
     
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		new HTSMBlockRegistry();
 		HTSMItemRegistry.ItemReg();
-//		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 	}
     	
     @EventHandler

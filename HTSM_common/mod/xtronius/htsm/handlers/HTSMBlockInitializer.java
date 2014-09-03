@@ -20,7 +20,9 @@ public class HTSMBlockInitializer {
 		init();
 	}
 	
-	private void init() {}
+	private void init() {
+		addBlock(new BlockCage(), "BlockCage");
+	}
 	
 	private void addBlock(Block block, String name) { 
 		block.setBlockName(name); 
@@ -29,5 +31,5 @@ public class HTSMBlockInitializer {
 		blocks.put(name, block); 
 	}
 	
-	public static void addToBlockReg(String name) { Block.blockRegistry.addObject(BlockIDs.getBlockID(name), name, blocks.get(name)); }
+	public static void addToBlockReg(String name) { /*Block.blockRegistry.addObject(BlockIDs.getBlockID(name), name, blocks.get(name)); */}
 }

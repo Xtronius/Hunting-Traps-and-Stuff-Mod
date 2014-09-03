@@ -37,5 +37,5 @@ public class Reference {
     /**
      * 	The String for gui textures
      */
-    public static final String MOD_Gui = "htsm";
+    public static final String MOD_Gui = "hts_mod";
 }

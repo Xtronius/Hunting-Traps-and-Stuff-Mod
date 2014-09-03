@@ -2,6 +2,7 @@ package mod.xtronius.htsm.handlers;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.tileEntity.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -27,5 +28,6 @@ public class HTSMBlockRegistry {
 	
 	private void regBlockManual() {
 //		GameRegistry.registerTileEntity(TileEntityExample.class, "BlockExample");
+		GameRegistry.registerTileEntity(TileEntityCage.class, "BlockCage");
 	}
 }
