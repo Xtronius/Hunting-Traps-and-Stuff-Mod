@@ -10,10 +10,5 @@ public class HTSMEntityHandler {
 
 	@SubscribeEvent
 	public void onEntityConstructing(EntityConstructing event) { 
-		if(event.entity != null && event.entity instanceof EntityPig) {
-			EntityPig entity = (EntityPig) event.entity;
-			
-//			entity.tasks.addTask(10, new EntityAIGoToCage(entity, 0, Items.gunpowder));
-		}
 	}
 }
