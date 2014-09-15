@@ -3,6 +3,7 @@ package mod.xtronius.htsm.tileEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+import scala.reflect.internal.Trees.This;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.relauncher.Side;
 import mod.xtronius.htsm.core.HTSM;
@@ -52,13 +53,6 @@ public class TileEntityCage extends TileEntity implements IInventory{
 			if(timer <= delay) timer++;
 			else timer = 0;
 			
-//				this.targetEntity = null;
-//				this.isCageClosed = false;
-//				
-//				//TODO Remove test code
-//				System.out.println("Target: " + targetEntity);
-//				System.out.println("IsClosed: " + isCageClosed);
-			
 			if(timer == delay) {
 				
 				//Checks to see if the inv slots are filled
@@ -88,8 +82,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 								double subPercent = (item * randPercent) < 1.0 ? (item * randPercent) : 1.0;
 								double finalPercent = 1 - subPercent;
 								
-//									double rand2 = Math.random();
-								double rand2 = 1.0;
+								double rand2 = Math.random();
 								
 								if(rand2 > finalPercent) {
 									//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
@@ -127,7 +120,11 @@ public class TileEntityCage extends TileEntity implements IInventory{
 						}
 					}
 				} else this.releaseEntity();
-				updateClient();
+				
+				if(this.entityData != null && this.entityData.hasKey("id"))
+					updateClient(this.entityData.getString("id"));
+				else
+					updateClient("");
 			}
 		}
 	}
@@ -185,18 +182,14 @@ public class TileEntityCage extends TileEntity implements IInventory{
 			entityLiving.readFromNBT(this.entityData);
 			this.worldObj.spawnEntityInWorld(entityLiving);
 			entityLiving.playLivingSound();
+			this.updateClient("");
 			this.resetVars();
 		}
 		return this.targetEntity;
 	}
 	
-	private void updateClient() {
-		if(this.entityData != null) {
-//			HTSM.cageData.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-//			HTSM.cageData.get(Side.SERVER).writeOutbound(new PacketCageData(this.entityData.getString("id"), this.xCoord, this.yCoord, this.zCoord));
-			
-			HTSM.network.sendToAll(new PacketCageData(this.entityData.getString("id"), this.xCoord, this.yCoord, this.zCoord));
-		}
+	private void updateClient(String id) {
+		HTSM.network.sendToAll(new PacketCageData(id, this.xCoord, this.yCoord, this.zCoord));
 	}
 
 	@Override

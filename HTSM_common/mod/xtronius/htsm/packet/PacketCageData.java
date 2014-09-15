@@ -51,7 +51,7 @@ public class PacketCageData implements IMessage{
         public IMessage onMessage(PacketCageData message, MessageContext ctx) {
         	
         	TileEntityCage tileEntity = (TileEntityCage) Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z);
-        	if(tileEntity != null && message.entityID != null) {
+        	if(tileEntity != null) {
         		tileEntity.targetEntityID = message.entityID;
         	} else System.out.println("FAILED!!!");
             return null;
