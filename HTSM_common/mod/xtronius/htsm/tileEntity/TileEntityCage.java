@@ -3,7 +3,11 @@ package mod.xtronius.htsm.tileEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.common.network.FMLOutboundHandler;
+import cpw.mods.fml.relauncher.Side;
+import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.entity.ai.EntityAIGoToCage;
+import mod.xtronius.htsm.packet.PacketCageData;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -23,14 +27,15 @@ import net.minecraft.util.AxisAlignedBB;
 public class TileEntityCage extends TileEntity implements IInventory{
 	
 	private ItemStack[] cageContents = new ItemStack[3];
-	
-	private boolean isStartup = true;
+
 	private boolean isCageClosed = false;
 	
 	private NBTTagCompound entityData = null;
 	
 	private EntityLiving targetEntity;
-	private EntityLiving capturedEntity;
+	
+	/**Client-Side Variable*/
+	public String targetEntityID;
 	
 	private ArrayList<Entity> removedEntities = new ArrayList<Entity>();
 	
@@ -41,133 +46,93 @@ public class TileEntityCage extends TileEntity implements IInventory{
 		
 		if(!this.worldObj.isRemote) {
 			
-			if(this.isStartup) {
-				if(this.entityData != null) {
-					EntityLiving entityLiving = (EntityLiving) EntityList.createEntityByName(this.entityData.getString("id"), this.worldObj);
-					entityLiving.setPosition(this.xCoord, this.yCoord+1, this.zCoord);
-					this.worldObj.spawnEntityInWorld(entityLiving);
-					this.entityData.setShort("DeathTime", (short) 0);
-					entityLiving.readFromNBT(this.entityData);
-					this.capturedEntity = this.targetEntity;
-					this.isCageClosed = true;
-				}
-				this.isStartup = false;
-			} else {
+			float seconds = 1.5f;
+			int delay = (int) (seconds * 20);
 			
-				float seconds = 1.5f;
-				int delay = (int) (seconds * 20);
-				
-				if(timer <= delay) timer++;
-				else timer = 0;
-				
+			if(timer <= delay) timer++;
+			else timer = 0;
+			
 //				this.targetEntity = null;
-//				this.capturedEntity = null;
 //				this.isCageClosed = false;
 //				
 //				//TODO Remove test code
 //				System.out.println("Target: " + targetEntity);
-//				System.out.println("Capture: " + capturedEntity);
 //				System.out.println("IsClosed: " + isCageClosed);
-				
-				if(timer == delay) {
-					
-					//Checks to see if the inv slots are filled
-					if(this.getStackInSlot(0) != null || this.getStackInSlot(1) != null || this.getStackInSlot(2) != null) { //TODO Create an item stack array for checking specific items
-						if(!this.isCageClosed) {
-							//Gets the block at the tile entities' postion
-							Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
-							
-							//Gets the bounding box of the block obtained above, then it offsets it and expands it
-							AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
-							AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
-							AxisAlignedBB aabb2 = aabb1.expand(4, 4, 4);
-							
-							//Gets all entities within this bounding box
-							List<EntityPig> list = this.worldObj.getEntitiesWithinAABB(EntityPig.class, aabb2);
-							
-							for(EntityPig entity : list) {
-								
-								// Breaks if the cage is closed, if the entity is already in another list or if there is already a targeted entity;
-								if(isCageClosed || this.targetEntity != null || this.capturedEntity != null) break;
 			
-								if(!this.removedEntities.contains(entity)) {
-									//Math for calculating the percentage chance
-									double rand = Math.random();
-									double randPercent = rand < 0.75 ? rand : 0.75;
-									double item = 1.0;
-									double subPercent = (item * randPercent) < 1.0 ? (item * randPercent) : 1.0;
-									double finalPercent = 1 - subPercent;
-									
+			if(timer == delay) {
+				
+				//Checks to see if the inv slots are filled
+				if(this.getStackInSlot(0) != null || this.getStackInSlot(1) != null || this.getStackInSlot(2) != null) { //TODO Create an item stack array for checking specific items
+					if(!this.isCageClosed) {
+						//Gets the block at the tile entities' postion
+						Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
+						
+						//Gets the bounding box of the block obtained above, then it offsets it and expands it
+						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
+						AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
+						AxisAlignedBB aabb2 = aabb1.expand(4, 4, 4);
+						
+						//Gets all entities within this bounding box
+						List<EntityPig> list = this.worldObj.getEntitiesWithinAABB(EntityPig.class, aabb2);
+						
+						for(EntityPig entity : list) {
+							
+							// Breaks if the cage is closed, if the entity is already in another list or if there is already a targeted entity;
+							if(isCageClosed || this.targetEntity != null) break;
+		
+							if(!this.removedEntities.contains(entity)) {
+								//Math for calculating the percentage chance
+								double rand = Math.random();
+								double randPercent = rand < 0.75 ? rand : 0.75;
+								double item = 1.0;
+								double subPercent = (item * randPercent) < 1.0 ? (item * randPercent) : 1.0;
+								double finalPercent = 1 - subPercent;
+								
 //									double rand2 = Math.random();
-									double rand2 = 1.0;
-									
-									if(rand2 > finalPercent) {
-										//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
-										entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-										this.isCageClosed = true;
-										this.targetEntity = entity;
-										break;
-									} else {
-										this.removedEntities.add(entity);
-									}
+								double rand2 = 1.0;
+								
+								if(rand2 > finalPercent) {
+									//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
+									entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+									this.isCageClosed = true;
+									this.targetEntity = entity;
+									break;
+								} else {
+									this.removedEntities.add(entity);
 								}
 							}
-						} else if(this.isCageClosed) {
-							
-							int range = 3;
-							
-							if(this.targetEntity != null && this.capturedEntity == null) {
-								if(this.targetEntity.posX > this.xCoord - range && this.targetEntity.posX < this.xCoord + range) {
-									if(this.targetEntity.posY > this.yCoord - range && this.targetEntity.posY < this.yCoord + range) {
-										if(this.targetEntity.posZ > this.zCoord - range && this.targetEntity.posZ < this.zCoord + range) {
-											this.capturedEntity = this.targetEntity;
-											if(this.capturedEntity != null) {
-												NBTTagCompound compound2 = new NBTTagCompound();
-										        compound2.setString("id", EntityList.getEntityString(this.capturedEntity));
-										        this.capturedEntity.writeToNBT(compound2);
-										        this.entityData = compound2;
-												this.capturedEntity.setDead();
-//												this.capturedEntity.isDead = false;
-											}
-//												this.capturedEntity.isDead = false;
-//												this.capturedEntity.setPosition(this.xCoord, -63, this.zCoord);
-//												this.capturedEntity.getEntityData().setBoolean("Invulnerable", true);
-//												this.capturedEntity.readFromNBT(this.capturedEntity.getEntityData());
-
-										} else
-											if(this.targetEntity != null) ((EntityPig) this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+						}
+					} else if(this.isCageClosed) {
+						
+						int range = 3;
+						
+						if(this.targetEntity != null) {
+							if(this.targetEntity.posX > this.xCoord - range && this.targetEntity.posX < this.xCoord + range) {
+								if(this.targetEntity.posY > this.yCoord - range && this.targetEntity.posY < this.yCoord + range) {
+									if(this.targetEntity.posZ > this.zCoord - range && this.targetEntity.posZ < this.zCoord + range) {
+										if(this.targetEntity != null) {
+											NBTTagCompound compound2 = new NBTTagCompound();
+									        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
+									        this.targetEntity.writeToNBT(compound2);
+									        this.entityData = compound2;
+											this.targetEntity.setDead();
+										}
+											this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
 									} else
 										if(this.targetEntity != null) ((EntityPig) this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 								} else
 									if(this.targetEntity != null) ((EntityPig) this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-							}
-							
-//							List<Entity> temp = this.worldObj.loadedEntityList;
-//							
-//							for(Entity entity : temp) {
-//								entity.setDead();
-//							}
-							
-//							if(this.capturedEntity != null) {
-//								this.capturedEntity.setPosition(this.xCoord, -63, this.zCoord);
-//								this.capturedEntity.getNavigator().clearPathEntity();
-//								this.capturedEntity.motionY = 2.192f;
-//								this.capturedEntity.isDead = false;
-//								this.capturedEntity.fallDistance = 0;
-//								this.capturedEntity.setInvisible(true);
-//							}
-							
-							//Checks if the captured entity is not alive, if so then reset the main variables
-//							if(this.capturedEntity != null) 
-//								if(this.capturedEntity.isDead) resetVars();
+							} else
+								if(this.targetEntity != null) ((EntityPig) this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 						}
 					}
-				}
+				} else this.releaseEntity();
+				updateClient();
 			}
 		}
 	}
 	
-	private void resetVars() { this.isCageClosed = false; this.targetEntity = null; this.capturedEntity = null; }
+	private void resetVars() { this.isCageClosed = false; this.targetEntity = null; this.entityData = null;}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
@@ -186,17 +151,14 @@ public class TileEntityCage extends TileEntity implements IInventory{
         }
         
         NBTTagCompound compound2 = (NBTTagCompound) compound.getTag("EntityData");
-        
-       
         this.entityData = compound2;
-        this.isStartup = true;
+        
+        if(this.entityData != null)
+        	this.isCageClosed = true;
     }
 
 	@Override
     public void writeToNBT(NBTTagCompound compound) {
-		
-		if(this.capturedEntity != null)
-			this.capturedEntity.setPosition(this.xCoord, 250, this.zCoord);
 		
         super.writeToNBT(compound);
         NBTTagList list = new NBTTagList();
@@ -218,28 +180,23 @@ public class TileEntityCage extends TileEntity implements IInventory{
     }
 	
 	public EntityLiving releaseEntity() {
-//		if(this.capturedEntity != null) {
-//			
-//			this.capturedEntity.getEntityData().setBoolean("Invulnerable", false);
-//			this.capturedEntity.readFromNBT(this.capturedEntity.getEntityData());
-//
-//			this.capturedEntity.setPosition(this.xCoord, this.yCoord + 1, this.zCoord);
-//			
-//			for(int h = 0; h < 4; h++) {
-//				for(int i = 0; i < 4; i++) {
-//					if(this.capturedEntity.getNavigator().tryMoveToXYZ((this.xCoord + (Math.random()*20)), this.yCoord+i, (this.zCoord + (Math.random()*20)), 1.0)) break;
-//					else if(this.capturedEntity.getNavigator().tryMoveToXYZ((this.xCoord + (Math.random()*20)), this.yCoord-i, (this.zCoord + (Math.random()*20)), 1.0)) break;
-//				}
-//			}
-//			this.capturedEntity.motionY = 0;
-//			this.capturedEntity.isDead = false;
-//			this.capturedEntity.fallDistance = 0;
-//			this.capturedEntity.setInvisible(false);
-//			this.capturedEntity.getEntityData().setBoolean("Invulnerable", true);
-//			this.removedEntities.add(this.capturedEntity);
-//			this.resetVars();
-//		}
-		return this.capturedEntity;
+		if(this.entityData != null) {
+			EntityLiving entityLiving = (EntityLiving) EntityList.createEntityByName(this.entityData.getString("id"), this.worldObj);
+			entityLiving.readFromNBT(this.entityData);
+			this.worldObj.spawnEntityInWorld(entityLiving);
+			entityLiving.playLivingSound();
+			this.resetVars();
+		}
+		return this.targetEntity;
+	}
+	
+	private void updateClient() {
+		if(this.entityData != null) {
+//			HTSM.cageData.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
+//			HTSM.cageData.get(Side.SERVER).writeOutbound(new PacketCageData(this.entityData.getString("id"), this.xCoord, this.yCoord, this.zCoord));
+			
+			HTSM.network.sendToAll(new PacketCageData(this.entityData.getString("id"), this.xCoord, this.yCoord, this.zCoord));
+		}
 	}
 
 	@Override

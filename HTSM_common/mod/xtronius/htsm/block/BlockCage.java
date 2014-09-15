@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 public class BlockCage extends HTSMBlockContainer{
 
 	public BlockCage() {
-		super(Material.iron);
+		super(Material.glass);
 		this.setBlockTextureName("BlockCage");
 		this.setCreativeTab(CreativeTabs.tabBlock);
 	}
@@ -34,4 +34,12 @@ public class BlockCage extends HTSMBlockContainer{
 	    }
     	return true;
     }
+	
+	public int getRenderType() { return -1; }
+	
+	public boolean isOpaqueCube() { return false; }
+	
+	@SideOnly(Side.CLIENT)
+    public int getRenderBlockPass() { return 0; }
+	public boolean renderAsNormalBlock() { return false; }
 }
