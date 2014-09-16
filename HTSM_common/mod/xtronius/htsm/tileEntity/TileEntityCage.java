@@ -29,6 +29,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 	private ItemStack[] cageContents = new ItemStack[3];
 
 	private boolean isCageClosed = false;
+	private boolean isProcessing = false;
 	
 	private NBTTagCompound entityData = null;
 	
@@ -55,48 +56,40 @@ public class TileEntityCage extends TileEntity implements IInventory{
 			if(timer == delay) {
 				
 				//Checks to see if the inv slots are filled
-				if(this.getStackInSlot(0) != null || this.getStackInSlot(1) != null || this.getStackInSlot(2) != null) { //TODO Create an item stack array for checking specific items
-					if(HTSM.cageList.isValidItemStack(this.getStackInSlot(0)) || HTSM.cageList.isValidItemStack(this.getStackInSlot(1)) || HTSM.cageList.isValidItemStack(this.getStackInSlot(2))) {
-						if(!this.isCageClosed) {
-							//Gets the block at the tile entities' postion
-							Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
-							
-							//Gets the bounding box of the block obtained above, then it offsets it and expands it
-							AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
-							AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
-							AxisAlignedBB aabb2 = aabb1.expand(4, 4, 4);
-							
-							List<EntityLiving> list;
-							
-							//Gets all entities within this bounding box
-							if(this.getStackInSlot(0) != null) {
-								list = this.worldObj.getEntitiesWithinAABB(HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(0)), aabb2);
-							} else if(this.getStackInSlot(1) != null) {
-								list = this.worldObj.getEntitiesWithinAABB(HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(1)), aabb2);
-							} else if(this.getStackInSlot(2) != null) {
-								list = this.worldObj.getEntitiesWithinAABB(HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(2)), aabb2);
-							} else return;
-							
-							for(EntityLiving entity : list) {
+				if((this.getStackInSlot(0) != null || this.getStackInSlot(1) != null || this.getStackInSlot(2) != null) || this.isProcessing) {
+					if(!this.isCageClosed) {
+						//Gets the block at the tile entities' postion
+						Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
+						
+						//Gets the bounding box of the block obtained above, then it offsets it and expands it
+						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
+						AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
+						AxisAlignedBB aabb2 = aabb1.expand(4, 4, 4);
+						
+						ArrayList<ArrayList<EntityLiving>> list = new ArrayList<ArrayList<EntityLiving>>();
+						
+						//Gets all entities within this bounding box						
+						for(int i = 0; i < this.getSizeInventory(); i++) {
+							if(this.getStackInSlot(i) != null && HTSM.cageList.isValidItemStack(this.getStackInSlot(i))) {
+								
+								ArrayList<Class> aquEntList = HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(i));
+								ArrayList<Entity> entitysInRange;
+//								list = this.worldObj.getEntitiesWithinAABB(, aabb2);
+								
+								for(Class entity : aquEntList) {
+									list.add((ArrayList<EntityLiving>) this.worldObj.getEntitiesWithinAABB(entity, aabb2));
+								}
+								break;
+							}
+						}
+						
+						for(ArrayList<EntityLiving> array : list) {
+							for(EntityLiving entity : array) {
 								
 								// Breaks if the cage is closed, if the entity is already in another list or if there is already a targeted entity;
 								if(isCageClosed || this.targetEntity != null) break;
 			
 								if(!this.removedEntities.contains(entity)) {
-									
-									if(this.getStackInSlot(0) != null) {
-										this.getStackInSlot(0).stackSize--;
-										if(this.getStackInSlot(0).stackSize <= 0)
-											this.setInventorySlotContents(0, null);
-									} else if(this.getStackInSlot(1) != null) {
-										this.getStackInSlot(1).stackSize--;
-										if(this.getStackInSlot(1).stackSize <= 0)
-											this.setInventorySlotContents(1, null);
-									} else if(this.getStackInSlot(2) != null) {
-										this.getStackInSlot(2).stackSize--;
-										if(this.getStackInSlot(2).stackSize <= 0)
-											this.setInventorySlotContents(2, null);
-									} else return;
 									
 									//Math for calculating the percentage chance
 									double rand = Math.random();
@@ -105,7 +98,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 									double subPercent = (item * randPercent) < 1.0 ? (item * randPercent) : 1.0;
 									double finalPercent = 1 - subPercent;
 									
-//									double rand2 = Math.random();
+	//									double rand2 = Math.random();
 									double rand2 = 1.0d;
 									
 									if(rand2 > finalPercent) {
@@ -113,38 +106,50 @@ public class TileEntityCage extends TileEntity implements IInventory{
 										entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 										this.isCageClosed = true;
 										this.targetEntity = entity;
+										
+										for(int i = 0; i < this.getSizeInventory(); i++) {
+											if(this.getStackInSlot(i) != null && this.getStackInSlot(i).stackSize > 0) {
+												this.getStackInSlot(i).stackSize--;
+												if(this.getStackInSlot(i).stackSize <= 0)
+													this.setInventorySlotContents(i, null);
+												this.isProcessing = true;
+												break;
+											} else this.setInventorySlotContents(i, null);
+										}
+										
 										break;
 									} else {
 										this.removedEntities.add(entity);
 									}
 								}
 							}
-						} else if(this.isCageClosed) {
-							
-							int range = 3;
-							
-							if(this.targetEntity != null) {
-								if(this.targetEntity.posX > this.xCoord - range && this.targetEntity.posX < this.xCoord + range) {
-									if(this.targetEntity.posY > this.yCoord - range && this.targetEntity.posY < this.yCoord + range) {
-										if(this.targetEntity.posZ > this.zCoord - range && this.targetEntity.posZ < this.zCoord + range) {
-											if(this.targetEntity != null) {
-												NBTTagCompound compound2 = new NBTTagCompound();
-										        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
-										        this.targetEntity.writeToNBT(compound2);
-										        this.entityData = compound2;
-												this.targetEntity.setDead();
-											}
-												this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
-										} else
-											if(this.targetEntity != null) (this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+						}
+					} else if(this.isCageClosed) {
+						
+						int range = 3;
+						
+						if(this.targetEntity != null) {
+							if(this.targetEntity.posX > this.xCoord - range && this.targetEntity.posX < this.xCoord + range) {
+								if(this.targetEntity.posY > this.yCoord - range && this.targetEntity.posY < this.yCoord + range) {
+									if(this.targetEntity.posZ > this.zCoord - range && this.targetEntity.posZ < this.zCoord + range) {
+										if(this.targetEntity != null) {
+											NBTTagCompound compound2 = new NBTTagCompound();
+									        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
+									        this.targetEntity.writeToNBT(compound2);
+									        this.entityData = compound2;
+											this.targetEntity.setDead();
+											this.isProcessing = false;
+										}
+											this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
 									} else
-										if(this.targetEntity != null) (this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+										if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 								} else
-									if(this.targetEntity != null) (this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-							}
+									if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+							} else
+								if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 						}
 					}
-				} else this.releaseEntity();
+				}
 				
 				if(this.entityData != null && this.entityData.hasKey("id"))
 					updateClient(this.entityData.getString("id"));
@@ -154,7 +159,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 		}
 	}
 	
-	private void resetVars() { this.isCageClosed = false; this.targetEntity = null; this.entityData = null;}
+	private void resetVars() { this.isCageClosed = false; this.targetEntity = null; this.entityData = null; this.isProcessing = false;}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
@@ -224,35 +229,27 @@ public class TileEntityCage extends TileEntity implements IInventory{
 	public ItemStack getStackInSlot(int slot) { return this.cageContents[slot]; }
 
 	@Override
-	public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_) {
-		 if (this.cageContents[p_70298_1_] != null)
-	        {
+	public ItemStack decrStackSize(int slotIndex, int i) {
+		 if (this.cageContents[slotIndex] != null) {
 	            ItemStack itemstack;
 
-	            if (this.cageContents[p_70298_1_].stackSize <= p_70298_2_)
-	            {
-	                itemstack = this.cageContents[p_70298_1_];
-	                this.cageContents[p_70298_1_] = null;
+	            if (this.cageContents[slotIndex].stackSize <= i) {
+	                itemstack = this.cageContents[slotIndex];
+	                this.cageContents[slotIndex] = null;
 	                this.markDirty();
 	                return itemstack;
 	            }
-	            else
-	            {
-	                itemstack = this.cageContents[p_70298_1_].splitStack(p_70298_2_);
-
-	                if (this.cageContents[p_70298_1_].stackSize == 0)
-	                {
-	                    this.cageContents[p_70298_1_] = null;
-	                }
-
+	            else {
+	                itemstack = this.cageContents[slotIndex].splitStack(i);
+	                
+	                if (this.cageContents[slotIndex].stackSize == 0) 
+	                    this.cageContents[slotIndex] = null;
+	                
 	                this.markDirty();
 	                return itemstack;
 	            }
 	        }
-	        else
-	        {
-	            return null;
-	        }
+	        else return null;
 	}
 
 	@Override
