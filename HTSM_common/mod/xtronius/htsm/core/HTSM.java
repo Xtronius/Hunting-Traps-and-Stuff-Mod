@@ -12,6 +12,7 @@ import mod.xtronius.htsm.handlers.HTSMItemRegistry;
 import mod.xtronius.htsm.lib.Reference;
 import mod.xtronius.htsm.packet.PacketCageData;
 import mod.xtronius.htsm.proxy.CommonProxy;
+import mod.xtronius.htsm.util.list.CageList;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
@@ -46,6 +47,8 @@ public class HTSM {
 	@Instance(Reference.MOD_ID)
 	public static HTSM instance;
 	
+	public static CageList cageList;
+	
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 		
@@ -74,6 +77,7 @@ public class HTSM {
     public void postInit(FMLPostInitializationEvent event) {
     	proxy.registerRenderInformation();
     	proxy.initSounds();
+    	proxy.initMiscInfo();
     }
     
     @EventHandler

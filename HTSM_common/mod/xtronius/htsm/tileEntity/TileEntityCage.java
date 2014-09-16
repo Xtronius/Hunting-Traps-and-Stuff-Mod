@@ -14,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAITempt;
-import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -57,66 +56,92 @@ public class TileEntityCage extends TileEntity implements IInventory{
 				
 				//Checks to see if the inv slots are filled
 				if(this.getStackInSlot(0) != null || this.getStackInSlot(1) != null || this.getStackInSlot(2) != null) { //TODO Create an item stack array for checking specific items
-					if(!this.isCageClosed) {
-						//Gets the block at the tile entities' postion
-						Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
-						
-						//Gets the bounding box of the block obtained above, then it offsets it and expands it
-						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
-						AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
-						AxisAlignedBB aabb2 = aabb1.expand(4, 4, 4);
-						
-						//Gets all entities within this bounding box
-						List<EntityPig> list = this.worldObj.getEntitiesWithinAABB(EntityPig.class, aabb2);
-						
-						for(EntityPig entity : list) {
+					if(HTSM.cageList.isValidItemStack(this.getStackInSlot(0)) || HTSM.cageList.isValidItemStack(this.getStackInSlot(1)) || HTSM.cageList.isValidItemStack(this.getStackInSlot(2))) {
+						if(!this.isCageClosed) {
+							//Gets the block at the tile entities' postion
+							Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
 							
-							// Breaks if the cage is closed, if the entity is already in another list or if there is already a targeted entity;
-							if(isCageClosed || this.targetEntity != null) break;
-		
-							if(!this.removedEntities.contains(entity)) {
-								//Math for calculating the percentage chance
-								double rand = Math.random();
-								double randPercent = rand < 0.75 ? rand : 0.75;
-								double item = 1.0;
-								double subPercent = (item * randPercent) < 1.0 ? (item * randPercent) : 1.0;
-								double finalPercent = 1 - subPercent;
+							//Gets the bounding box of the block obtained above, then it offsets it and expands it
+							AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
+							AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
+							AxisAlignedBB aabb2 = aabb1.expand(4, 4, 4);
+							
+							List<EntityLiving> list;
+							
+							//Gets all entities within this bounding box
+							if(this.getStackInSlot(0) != null) {
+								list = this.worldObj.getEntitiesWithinAABB(HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(0)), aabb2);
+							} else if(this.getStackInSlot(1) != null) {
+								list = this.worldObj.getEntitiesWithinAABB(HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(1)), aabb2);
+							} else if(this.getStackInSlot(2) != null) {
+								list = this.worldObj.getEntitiesWithinAABB(HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(2)), aabb2);
+							} else return;
+							
+							for(EntityLiving entity : list) {
 								
-								double rand2 = Math.random();
-								
-								if(rand2 > finalPercent) {
-									//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
-									entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-									this.isCageClosed = true;
-									this.targetEntity = entity;
-									break;
-								} else {
-									this.removedEntities.add(entity);
+								// Breaks if the cage is closed, if the entity is already in another list or if there is already a targeted entity;
+								if(isCageClosed || this.targetEntity != null) break;
+			
+								if(!this.removedEntities.contains(entity)) {
+									
+									if(this.getStackInSlot(0) != null) {
+										this.getStackInSlot(0).stackSize--;
+										if(this.getStackInSlot(0).stackSize <= 0)
+											this.setInventorySlotContents(0, null);
+									} else if(this.getStackInSlot(1) != null) {
+										this.getStackInSlot(1).stackSize--;
+										if(this.getStackInSlot(1).stackSize <= 0)
+											this.setInventorySlotContents(1, null);
+									} else if(this.getStackInSlot(2) != null) {
+										this.getStackInSlot(2).stackSize--;
+										if(this.getStackInSlot(2).stackSize <= 0)
+											this.setInventorySlotContents(2, null);
+									} else return;
+									
+									//Math for calculating the percentage chance
+									double rand = Math.random();
+									double randPercent = rand < 0.75 ? rand : 0.75;
+									double item = 1.0;
+									double subPercent = (item * randPercent) < 1.0 ? (item * randPercent) : 1.0;
+									double finalPercent = 1 - subPercent;
+									
+//									double rand2 = Math.random();
+									double rand2 = 1.0d;
+									
+									if(rand2 > finalPercent) {
+										//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
+										entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+										this.isCageClosed = true;
+										this.targetEntity = entity;
+										break;
+									} else {
+										this.removedEntities.add(entity);
+									}
 								}
 							}
-						}
-					} else if(this.isCageClosed) {
-						
-						int range = 3;
-						
-						if(this.targetEntity != null) {
-							if(this.targetEntity.posX > this.xCoord - range && this.targetEntity.posX < this.xCoord + range) {
-								if(this.targetEntity.posY > this.yCoord - range && this.targetEntity.posY < this.yCoord + range) {
-									if(this.targetEntity.posZ > this.zCoord - range && this.targetEntity.posZ < this.zCoord + range) {
-										if(this.targetEntity != null) {
-											NBTTagCompound compound2 = new NBTTagCompound();
-									        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
-									        this.targetEntity.writeToNBT(compound2);
-									        this.entityData = compound2;
-											this.targetEntity.setDead();
-										}
-											this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
+						} else if(this.isCageClosed) {
+							
+							int range = 3;
+							
+							if(this.targetEntity != null) {
+								if(this.targetEntity.posX > this.xCoord - range && this.targetEntity.posX < this.xCoord + range) {
+									if(this.targetEntity.posY > this.yCoord - range && this.targetEntity.posY < this.yCoord + range) {
+										if(this.targetEntity.posZ > this.zCoord - range && this.targetEntity.posZ < this.zCoord + range) {
+											if(this.targetEntity != null) {
+												NBTTagCompound compound2 = new NBTTagCompound();
+										        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
+										        this.targetEntity.writeToNBT(compound2);
+										        this.entityData = compound2;
+												this.targetEntity.setDead();
+											}
+												this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
+										} else
+											if(this.targetEntity != null) (this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 									} else
-										if(this.targetEntity != null) ((EntityPig) this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+										if(this.targetEntity != null) (this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 								} else
-									if(this.targetEntity != null) ((EntityPig) this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-							} else
-								if(this.targetEntity != null) ((EntityPig) this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+									if(this.targetEntity != null) (this.targetEntity).getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+							}
 						}
 					}
 				} else this.releaseEntity();
