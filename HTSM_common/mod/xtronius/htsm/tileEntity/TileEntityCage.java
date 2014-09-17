@@ -57,7 +57,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 				
 				//Checks to see if the inv slots are filled
 				if((this.getStackInSlot(0) != null || this.getStackInSlot(1) != null || this.getStackInSlot(2) != null) || this.isProcessing) {
-					if(!this.isCageClosed) {
+					if(!this.isCageClosed()) {
 						//Gets the block at the tile entities' postion
 						Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
 						
@@ -76,9 +76,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 								ArrayList<Entity> entitysInRange;
 //								list = this.worldObj.getEntitiesWithinAABB(, aabb2);
 								
-								for(Class entity : aquEntList) {
-									list.add((ArrayList<EntityLiving>) this.worldObj.getEntitiesWithinAABB(entity, aabb2));
-								}
+								for(Class entity : aquEntList) list.add((ArrayList<EntityLiving>) this.worldObj.getEntitiesWithinAABB(entity, aabb2));
 								break;
 							}
 						}
@@ -87,7 +85,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 							for(EntityLiving entity : array) {
 								
 								// Breaks if the cage is closed, if the entity is already in another list or if there is already a targeted entity;
-								if(isCageClosed || this.targetEntity != null) break;
+								if(isCageClosed() || this.targetEntity != null) break;
 			
 								if(!this.removedEntities.contains(entity)) {
 									
@@ -104,7 +102,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 									if(rand2 > finalPercent) {
 										//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
 										entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-										this.isCageClosed = true;
+										this.setCageClosed(true);
 										this.targetEntity = entity;
 										
 										for(int i = 0; i < this.getSizeInventory(); i++) {
@@ -124,7 +122,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 								}
 							}
 						}
-					} else if(this.isCageClosed) {
+					} else if(this.isCageClosed()) {
 						
 						int range = 3;
 						
@@ -136,7 +134,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 											NBTTagCompound compound2 = new NBTTagCompound();
 									        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
 									        this.targetEntity.writeToNBT(compound2);
-									        this.entityData = compound2;
+									        this.setEntityData(compound2);
 											this.targetEntity.setDead();
 											this.isProcessing = false;
 										}
@@ -151,15 +149,15 @@ public class TileEntityCage extends TileEntity implements IInventory{
 					}
 				}
 				
-				if(this.entityData != null && this.entityData.hasKey("id"))
-					updateClient(this.entityData.getString("id"));
+				if(this.getEntityData() != null && this.getEntityData().hasKey("id"))
+					updateClient(this.getEntityData().getString("id"));
 				else
 					updateClient("");
 			}
 		}
 	}
 	
-	private void resetVars() { this.isCageClosed = false; this.targetEntity = null; this.entityData = null; this.isProcessing = false;}
+	private void resetVars() { this.setCageClosed(false); this.targetEntity = null; this.setEntityData(null); this.isProcessing = false;}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
@@ -178,10 +176,10 @@ public class TileEntityCage extends TileEntity implements IInventory{
         }
         
         NBTTagCompound compound2 = (NBTTagCompound) compound.getTag("EntityData");
-        this.entityData = compound2;
+        this.setEntityData(compound2);
         
-        if(this.entityData != null)
-        	this.isCageClosed = true;
+        if(this.getEntityData() != null)
+        	this.setCageClosed(true);
     }
 
 	@Override
@@ -201,15 +199,15 @@ public class TileEntityCage extends TileEntity implements IInventory{
         
         compound.setTag("Items", list);
         
-        if(this.entityData != null) {
-	        compound.setTag("EntityData", this.entityData);
+        if(this.getEntityData() != null) {
+	        compound.setTag("EntityData", this.getEntityData());
         }
     }
 	
 	public EntityLiving releaseEntity() {
-		if(this.entityData != null) {
-			EntityLiving entityLiving = (EntityLiving) EntityList.createEntityByName(this.entityData.getString("id"), this.worldObj);
-			entityLiving.readFromNBT(this.entityData);
+		if(this.getEntityData() != null) {
+			EntityLiving entityLiving = (EntityLiving) EntityList.createEntityByName(this.getEntityData().getString("id"), this.worldObj);
+			entityLiving.readFromNBT(this.getEntityData());
 			this.worldObj.spawnEntityInWorld(entityLiving);
 			entityLiving.playLivingSound();
 			this.updateClient("");
@@ -278,4 +276,10 @@ public class TileEntityCage extends TileEntity implements IInventory{
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) { return true; }
+
+	public boolean isCageClosed() { return isCageClosed; }
+	public void setCageClosed(boolean isCageClosed) { this.isCageClosed = isCageClosed; }
+
+	public NBTTagCompound getEntityData() { return entityData; }
+	public void setEntityData(NBTTagCompound entityData) { this.entityData = entityData; }
 }

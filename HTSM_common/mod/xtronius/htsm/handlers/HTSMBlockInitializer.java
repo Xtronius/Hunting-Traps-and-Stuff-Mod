@@ -3,10 +3,10 @@ package mod.xtronius.htsm.handlers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mod.xtronius.htsm.block.BlockIDs;
 import mod.xtronius.htsm.block.*;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 
 public class HTSMBlockInitializer {
 	
@@ -32,4 +32,5 @@ public class HTSMBlockInitializer {
 	}
 	
 	public static void addToBlockReg(String name) { /*Block.blockRegistry.addObject(BlockIDs.getBlockID(name), name, blocks.get(name)); */}
+	public static Block getBlockByName(String name) { return blocks.get(name); }
 }
