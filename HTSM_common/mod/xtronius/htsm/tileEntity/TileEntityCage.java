@@ -30,82 +30,68 @@ public class TileEntityCage extends TileEntity implements IInventory{
 
 	private boolean isCageClosed = false;
 	private boolean isProcessing = false;
-	
-	private NBTTagCompound entityData = null;
-	
 	private EntityLiving targetEntity;
+	private NBTTagCompound entityData = null;
+	private ArrayList<Entity> removedEntities = new ArrayList<Entity>();
 	
 	/**Client-Side Variable*/
 	public String targetEntityID;
 	
-	private ArrayList<Entity> removedEntities = new ArrayList<Entity>();
-	
 	private int timer = 0;
+	private float seconds = 1.5f;
+	
+	private int detectionRange = 10;
+	private int captureRange = 3;
 
 	@Override
 	public void updateEntity() {
 		
+		//TODO Clean up code
+		
+		this.incrementTimer();
+		
 		if(!this.worldObj.isRemote) {
-			
-			float seconds = 1.5f;
-			int delay = (int) (seconds * 20);
-			
-			if(timer <= delay) timer++;
-			else timer = 0;
-			
-			if(timer == delay) {
-				
+			if(timer == getDelay()) {
 				//Checks to see if the inv slots are filled
-				if((this.getStackInSlot(0) != null || this.getStackInSlot(1) != null || this.getStackInSlot(2) != null) || this.isProcessing) {
-					if(!this.isCageClosed()) {
+				if(this.doesHaveItem() || this.isProcessing) {
+					if(!this.isCageClosed() || this.targetEntity == null) {
 						//Gets the block at the tile entities' postion
 						Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
-						
 						//Gets the bounding box of the block obtained above, then it offsets it and expands it
 						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
 						AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
-						AxisAlignedBB aabb2 = aabb1.expand(4, 4, 4);
-						
+						AxisAlignedBB aabb2 = aabb1.expand(detectionRange, detectionRange, detectionRange);
+						//The master list in-which all of the entities within range are put in a nested Array-List
 						ArrayList<ArrayList<EntityLiving>> list = new ArrayList<ArrayList<EntityLiving>>();
 						
-						//Gets all entities within this bounding box						
-						for(int i = 0; i < this.getSizeInventory(); i++) {
+						//Gets all entities within this bounding box and adds them to the master list					
+						for(int i = 0; i < this.getSizeInventory(); i++) 
 							if(this.getStackInSlot(i) != null && HTSM.cageList.isValidItemStack(this.getStackInSlot(i))) {
-								
 								ArrayList<Class> aquEntList = HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(i));
-								ArrayList<Entity> entitysInRange;
-//								list = this.worldObj.getEntitiesWithinAABB(, aabb2);
-								
 								for(Class entity : aquEntList) list.add((ArrayList<EntityLiving>) this.worldObj.getEntitiesWithinAABB(entity, aabb2));
 								break;
 							}
-						}
 						
-						for(ArrayList<EntityLiving> array : list) {
+						for(ArrayList<EntityLiving> array : list) 
 							for(EntityLiving entity : array) {
-								
-								// Breaks if the cage is closed, if the entity is already in another list or if there is already a targeted entity;
-								if(isCageClosed() || this.targetEntity != null) break;
-			
 								if(!this.removedEntities.contains(entity)) {
-									
 									//Math for calculating the percentage chance
-									double rand = Math.random();
-									double randPercent = rand < 0.75 ? rand : 0.75;
+									double rand1 = Math.random();
+									double randPercent = rand1 <= 0.75 ? rand1 : 0.75;
 									double item = 1.0;
-									double subPercent = (item * randPercent) < 1.0 ? (item * randPercent) : 1.0;
-									double finalPercent = 1 - subPercent;
+									double itemPercent = (item * randPercent) < 1.0 ? (item * randPercent) : 1.0;
+									double finalPercent = 1 - itemPercent;
 									
 	//									double rand2 = Math.random();
 									double rand2 = 1.0d;
 									
-									if(rand2 > finalPercent) {
+									if(rand2 >= finalPercent) {
 										//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
 										entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 										this.setCageClosed(true);
 										this.targetEntity = entity;
 										
-										for(int i = 0; i < this.getSizeInventory(); i++) {
+										for(int i = 0; i < this.getSizeInventory(); i++) 
 											if(this.getStackInSlot(i) != null && this.getStackInSlot(i).stackSize > 0) {
 												this.getStackInSlot(i).stackSize--;
 												if(this.getStackInSlot(i).stackSize <= 0)
@@ -113,23 +99,15 @@ public class TileEntityCage extends TileEntity implements IInventory{
 												this.isProcessing = true;
 												break;
 											} else this.setInventorySlotContents(i, null);
-										}
-										
 										break;
-									} else {
-										this.removedEntities.add(entity);
-									}
+									} else this.removedEntities.add(entity);
 								}
 							}
-						}
 					} else if(this.isCageClosed()) {
-						
-						int range = 3;
-						
-						if(this.targetEntity != null) {
-							if(this.targetEntity.posX > this.xCoord - range && this.targetEntity.posX < this.xCoord + range) {
-								if(this.targetEntity.posY > this.yCoord - range && this.targetEntity.posY < this.yCoord + range) {
-									if(this.targetEntity.posZ > this.zCoord - range && this.targetEntity.posZ < this.zCoord + range) {
+						if(this.targetEntity != null) 
+							if(this.targetEntity.posX > this.xCoord - captureRange && this.targetEntity.posX < this.xCoord + captureRange) 
+								if(this.targetEntity.posY > this.yCoord - captureRange && this.targetEntity.posY < this.yCoord + captureRange) 
+									if(this.targetEntity.posZ > this.zCoord - captureRange && this.targetEntity.posZ < this.zCoord + captureRange) 
 										if(this.targetEntity != null) {
 											NBTTagCompound compound2 = new NBTTagCompound();
 									        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
@@ -137,18 +115,14 @@ public class TileEntityCage extends TileEntity implements IInventory{
 									        this.setEntityData(compound2);
 											this.targetEntity.setDead();
 											this.isProcessing = false;
-										}
 											this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
-									} else
-										if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-								} else
-									if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-							} else
-								if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-						}
+										}
+									 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+								 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+							 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 					}
 				}
-				
+				//Updates the Client
 				if(this.getEntityData() != null && this.getEntityData().hasKey("id"))
 					updateClient(this.getEntityData().getString("id"));
 				else
@@ -156,8 +130,6 @@ public class TileEntityCage extends TileEntity implements IInventory{
 			}
 		}
 	}
-	
-	private void resetVars() { this.setCageClosed(false); this.targetEntity = null; this.setEntityData(null); this.isProcessing = false;}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
@@ -170,21 +142,17 @@ public class TileEntityCage extends TileEntity implements IInventory{
             NBTTagCompound compound1 = list.getCompoundTagAt(i);
             int j = compound1.getByte("Slot") & 255;
 
-            if (j >= 0 && j < this.cageContents.length) {
-                this.cageContents[j] = ItemStack.loadItemStackFromNBT(compound1);
-            }
+            if (j >= 0 && j < this.cageContents.length)  this.cageContents[j] = ItemStack.loadItemStackFromNBT(compound1);
         }
         
         NBTTagCompound compound2 = (NBTTagCompound) compound.getTag("EntityData");
-        this.setEntityData(compound2);
         
-        if(this.getEntityData() != null)
-        	this.setCageClosed(true);
+        this.setEntityData(compound2);
+        if(this.getEntityData() != null) this.setCageClosed(true);
     }
 
 	@Override
     public void writeToNBT(NBTTagCompound compound) {
-		
         super.writeToNBT(compound);
         NBTTagList list = new NBTTagList();
         
@@ -204,22 +172,26 @@ public class TileEntityCage extends TileEntity implements IInventory{
         }
     }
 	
-	public EntityLiving releaseEntity() {
+	public boolean releaseEntity() {
 		if(this.getEntityData() != null) {
 			EntityLiving entityLiving = (EntityLiving) EntityList.createEntityByName(this.getEntityData().getString("id"), this.worldObj);
 			entityLiving.readFromNBT(this.getEntityData());
+			entityLiving.setPosition(this.xCoord+1, this.yCoord+1, this.zCoord+1);
 			this.worldObj.spawnEntityInWorld(entityLiving);
 			entityLiving.playLivingSound();
 			this.updateClient("");
 			this.resetVars();
+			return true;
 		}
-		return this.targetEntity;
+//		this.resetVars();
+		return false;
 	}
 	
-	private void updateClient(String id) {
-		HTSM.network.sendToAll(new PacketCageData(id, this.xCoord, this.yCoord, this.zCoord));
-	}
-
+	private boolean doesHaveItem() { for(int i = 0; i < 3; i++) if(this.getStackInSlot(i) != null) return true; return false; }
+	private void resetVars() { this.setCageClosed(false); this.targetEntity = null; this.setEntityData(null); this.isProcessing = false;}
+	
+	private void updateClient(String id) { HTSM.network.sendToAll(new PacketCageData(id, this.entityData, this.xCoord, this.yCoord, this.zCoord)); }
+	
 	@Override
 	public int getSizeInventory() { return 3; }
 
@@ -282,4 +254,8 @@ public class TileEntityCage extends TileEntity implements IInventory{
 
 	public NBTTagCompound getEntityData() { return entityData; }
 	public void setEntityData(NBTTagCompound entityData) { this.entityData = entityData; }
+	
+	private int getDelay() { return (int) (this.seconds * 20);}
+	
+	private void incrementTimer() { if(timer <= getDelay()) timer++;else timer = 0; }
 }

@@ -26,6 +26,7 @@ public class HTSMItemInitializer {
 	}
 	
 	private void addItem(Item item, String name) { 
+		item.setUnlocalizedName(name);
 		ItemIDs.genNewItemIDObj(name); 
 		itemNames.add(name); 
 		items.put(name, item); 

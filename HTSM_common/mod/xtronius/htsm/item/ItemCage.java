@@ -40,7 +40,7 @@ public class ItemCage extends Item {
 		if(tileEntity != null) {
 			NBTTagCompound nbt = stack.getTagCompound();
 			
-			if(!nbt.hasNoTags()) {
+			if(nbt != null && !nbt.hasNoTags()) {
 				
 				NBTTagList list = nbt.getTagList("CageItems", 10);
 
@@ -58,6 +58,7 @@ public class ItemCage extends Item {
 		        
 		        if(tileEntity.getEntityData() != null)
 		        	tileEntity.setCageClosed(true);
+		        return true;
 			}
 		}
 		

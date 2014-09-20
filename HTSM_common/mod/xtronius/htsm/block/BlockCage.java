@@ -1,28 +1,34 @@
 package mod.xtronius.htsm.block;
 
+import java.util.Random;
+
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.tileEntity.gui.GuiIDs;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCage extends HTSMBlockContainer{
+	
+	private Random rand = new Random();
 
 	public BlockCage() {
-		super(Material.glass);
+		super(Material.iron);
 		this.setBlockTextureName("BlockCage");
-		this.setCreativeTab(CreativeTabs.tabBlock);
 		this.setLightOpacity(0);
 	}
 	
@@ -62,6 +68,12 @@ public class BlockCage extends HTSMBlockContainer{
 	    		        
 	    				player.inventory.addItemStackToInventory(stack);
 	    				
+	    				for(int i = 0; i < tileEntity.getSizeInventory(); i++)
+    						tileEntity.setInventorySlotContents(i, null);;
+    				
+    					tileEntity.setEntityData(null);
+    					tileEntity.releaseEntity();
+	    				
 	    				world.setBlockToAir(x, y, z);
 //	    			}
 	    		}
@@ -79,7 +91,35 @@ public class BlockCage extends HTSMBlockContainer{
 		TileEntityCage tileEntity = (TileEntityCage) world.getTileEntity(x, y, z);
 		
 		if(tileEntity != null) {
+			
 			tileEntity.releaseEntity();
+			
+			for (int i1 = 0; i1 < tileEntity.getSizeInventory(); ++i1) {
+                ItemStack itemstack = tileEntity.getStackInSlot(i1);
+
+                if (itemstack != null) {
+                    float f = this.rand.nextFloat() * 0.9F + 0.2F;
+                    float f1 = this.rand.nextFloat() * 0.9F + 0.2F;
+                    float f2 = this.rand.nextFloat() * 0.9F + 0.2F;
+
+                    while (itemstack.stackSize > 0) {
+                        int j1 = this.rand.nextInt(21) + 10;
+
+                        if (j1 > itemstack.stackSize)  j1 = itemstack.stackSize;
+
+                        itemstack.stackSize -= j1;
+                        EntityItem entityitem = new EntityItem(world, (double)((float)x + f), (double)((float)y + f1), (double)((float)z + f2), new ItemStack(itemstack.getItem(), j1, itemstack.getItemDamage()));
+
+                        if (itemstack.hasTagCompound()) entityitem.getEntityItem().setTagCompound((NBTTagCompound)itemstack.getTagCompound().copy());
+                       
+                        float f3 = 0.05F;
+                        entityitem.motionX = (double)((float)this.rand.nextGaussian() * f3);
+                        entityitem.motionY = (double)((float)this.rand.nextGaussian() * f3 + 0.2F);
+                        entityitem.motionZ = (double)((float)this.rand.nextGaussian() * f3);
+                        world.spawnEntityInWorld(entityitem);
+                    }
+                }
+            }
 		}
 	}
 	
