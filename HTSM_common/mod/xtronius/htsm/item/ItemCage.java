@@ -9,6 +9,7 @@ import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.util.Util;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,48 +28,57 @@ public class ItemCage extends Item {
 		
 //		world.setTileEntity(x, y+1, x, new TileEntityCage(stack));
 		
-		int xCoord = x;
-		int yCoord = y;
-		int zCoord = z;
+		if(!world.isRemote) {
 		
-		if (meta == 4) --xCoord;
-        if (meta == 5) ++xCoord;
-		if (meta == 0) --yCoord;
-        if (meta == 1) ++yCoord;
-        if (meta == 2) --zCoord;
-        if (meta == 3) ++zCoord;
-        
-		world.setBlock(xCoord, yCoord, zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-
-		TileEntityCage tileEntity = (TileEntityCage) world.getTileEntity(xCoord, yCoord, zCoord);
-		
-		if(tileEntity != null) {
-			NBTTagCompound nbt = stack.getTagCompound();
+			int xCoord = x;
+			int yCoord = y;
+			int zCoord = z;
 			
-			if(nbt != null && !nbt.hasNoTags()) {
+			int playerX = (int) (player.posX -(int)player.posX > 0.5 ? Math.ceil(player.posX) : Math.floor(player.posX));
+			int playerZ = (int) (player.posZ -(int)player.posZ > 0.5 ? Math.ceil(player.posZ) : Math.floor(player.posZ));
+			
+			if (meta == 4) --xCoord;
+	        if (meta == 5) ++xCoord;
+			if (meta == 0) --yCoord;
+	        if (meta == 1) ++yCoord;
+	        if (meta == 2) --zCoord;
+	        if (meta == 3) ++zCoord;
+	        
+	        
+			if((xCoord == playerX && zCoord == playerZ) || !(world.getBlock(xCoord, yCoord, zCoord).equals(Blocks.air))) return false;
+			else {
+				world.setBlock(xCoord, yCoord, zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+				stack.stackSize--;
+			}
+			
+			TileEntityCage tileEntity = (TileEntityCage) world.getTileEntity(xCoord, yCoord, zCoord);
+			
+			if(tileEntity != null) {
+				NBTTagCompound nbt = stack.getTagCompound();
 				
-				NBTTagList list = nbt.getTagList("CageItems", 10);
-
-		        for (int i = 0; i < list.tagCount(); ++i) {
-		            NBTTagCompound compound1 = list.getCompoundTagAt(i);
-		            int j = compound1.getByte("Slot") & 255;
-
-		            if (j >= 0 && j < 3) {
-		                tileEntity.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(compound1));
-		            }
-		        }
-		        
-		        NBTTagCompound compound2 = (NBTTagCompound) nbt.getTag("EntityData");
-		        tileEntity.setEntityData(compound2);
-		        
-		        if(tileEntity.getEntityData() != null)
-		        	tileEntity.setCageClosed(true);
-		        stack.stackSize--;
-		        return true;
+				if(nbt != null && !nbt.hasNoTags()) {
+					
+					NBTTagList list = nbt.getTagList("CageItems", 10);
+	
+			        for (int i = 0; i < list.tagCount(); ++i) {
+			            NBTTagCompound compound1 = list.getCompoundTagAt(i);
+			            int j = compound1.getByte("Slot") & 255;
+	
+			            if (j >= 0 && j < 3) {
+			                tileEntity.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(compound1));
+			            }
+			        }
+			        
+			        NBTTagCompound compound2 = (NBTTagCompound) nbt.getTag("EntityData");
+			        tileEntity.setEntityData(compound2);
+			        
+			        if(tileEntity.getEntityData() != null)
+			        	tileEntity.setCageClosed(true);
+			        return true;
+				}
 			}
 		}
-		
-		return false;
+		return true;
     }
 	
 	@SideOnly(Side.CLIENT)

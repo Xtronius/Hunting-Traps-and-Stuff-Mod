@@ -4,5 +4,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Minecraft"/>
 	<classpathentry kind="src" path="HTSM_resources"/>
 	<classpathentry kind="src" path="HTSM_common"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

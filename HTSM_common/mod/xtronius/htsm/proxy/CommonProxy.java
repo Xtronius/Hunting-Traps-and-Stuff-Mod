@@ -7,7 +7,7 @@ import mod.xtronius.htsm.util.list.CageList;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.relauncher.Side;
 
-public class CommonProxy {
+public class CommonProxy implements IProxy{
 	
 	public void registerRenderInformation() {}
 
@@ -16,4 +16,19 @@ public class CommonProxy {
 	public void initMiscInfo() {
 		HTSM.cageList = new CageList();
 	}
+
+	@Override
+	public void registerTileEntities() {}
+
+	@Override
+	public void initRenderingAndTextures() {}
+
+	@Override
+	public void registerEventHandlers() {}
+
+	@Override
+	public void registerKeybindings() {}
+
+	@Override
+	public void playSound(String soundName, float xCoord, float yCoord, float zCoord, float volume, float pitch) {}
 }
