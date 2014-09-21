@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiCage extends GuiContainer {
-    private static final ResourceLocation cageGuiTextures = new ResourceLocation(Reference.MOD_Gui, "textures/gui/container/GuiCage.png");
+    private static final ResourceLocation cageGuiTextures = new ResourceLocation(Reference.MOD_ASSET, "textures/gui/container/GuiCage.png");
 
     private static ContainerCage container;
 

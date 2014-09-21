@@ -25,7 +25,7 @@ public class RenderCage extends TileEntitySpecialRenderer{
 	
 	
 	public ModelCage model;
-	public static ResourceLocation texture = new ResourceLocation(Reference.MOD_Gui, "textures/modelTextureMaps/ModelCage_Texture_Map.png");
+	public static ResourceLocation texture = new ResourceLocation(Reference.MOD_ASSET, "textures/modelTextureMaps/ModelCage_Texture_Map.png");
 	public Minecraft mc = Minecraft.getMinecraft();
 	
 	public RenderCage() {

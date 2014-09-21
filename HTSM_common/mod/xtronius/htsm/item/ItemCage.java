@@ -1,9 +1,15 @@
 package mod.xtronius.htsm.item;
 
+import java.util.List;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
+import mod.xtronius.htsm.util.Util;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +19,6 @@ import net.minecraft.world.World;
 public class ItemCage extends Item {
 	
 	public ItemCage() {
-		this.setTextureName("ItemUniversalMultiTool");
 		this.setCreativeTab(CreativeTabs.tabTools);
 		this.setMaxStackSize(1);
 	}
@@ -58,10 +63,38 @@ public class ItemCage extends Item {
 		        
 		        if(tileEntity.getEntityData() != null)
 		        	tileEntity.setCageClosed(true);
+		        stack.stackSize--;
 		        return true;
 			}
 		}
 		
 		return false;
+    }
+	
+	@SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+		super.addInformation(stack, player, list, par4);
+
+		if(stack.getTagCompound() != null) {
+			NBTTagCompound nbt1 = (NBTTagCompound) stack.getTagCompound().getTag("EntityData");
+			NBTTagList nbt2 = (NBTTagList) stack.getTagCompound().getTagList("CageItems", 10);
+			if(nbt1 != null) list.add(Util.UCCTS + 'a' + "Entity Captured: " + Util.splitCamelCase(nbt1.getString("id")));
+			else list.add(1, "No Entity Stored");
+			if(nbt2.tagCount() > 0) {
+		        for (int i = 0; i < nbt2.tagCount(); ++i) {
+		            NBTTagCompound compound1 = nbt2.getCompoundTagAt(i);
+		            int j = compound1.getByte("Slot") & 255;
+		            
+		            if (j >= 0 && j < 3) 
+		                list.add(Util.UCCTS + 'a' + "Slot " + j + ": " + Util.getUnlocalizedNameInefficiently(Item.getItemById(compound1.getShort("id"))) +  ' ' + compound1.getByte("Count"));
+		        }
+			} else 
+				list.add("No Items Stores");
+		}
+
+    }
+	
+	public EnumAction getItemUseAction(ItemStack par1ItemStack) {
+        return EnumAction.block;
     }
 }

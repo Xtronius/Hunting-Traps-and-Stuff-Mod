@@ -3,8 +3,8 @@ package mod.xtronius.htsm.handlers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mod.xtronius.htsm.item.ItemIDs;
 import mod.xtronius.htsm.item.*;
+import mod.xtronius.htsm.lib.Reference;
 import net.minecraft.item.Item;
 
 
@@ -25,8 +25,9 @@ public class HTSMItemInitializer {
 		addItem(new ItemCage(), "ItemCage");
 	}
 	
-	private void addItem(Item item, String name) { 
+	private void addItem(Item item, String name) {
 		item.setUnlocalizedName(name);
+		item.setTextureName(Reference.MOD_ASSET + ':' + name);
 		ItemIDs.genNewItemIDObj(name); 
 		itemNames.add(name); 
 		items.put(name, item); 

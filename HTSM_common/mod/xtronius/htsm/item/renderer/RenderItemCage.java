@@ -21,7 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderItemCage implements IItemRenderer {
 	
-	private static ResourceLocation texture = new ResourceLocation(Reference.MOD_Gui, "textures/modelTextureMaps/ModelCage_Texture_Map.png");
+	private static ResourceLocation texture = new ResourceLocation(Reference.MOD_ASSET, "textures/modelTextureMaps/ModelCage_Texture_Map.png");
 	private final ModelCage modelCage;
 
     public RenderItemCage() {
