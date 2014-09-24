@@ -51,6 +51,13 @@ public class ItemUniversalMultiTool extends Item {
 	            }
 	        }
 	        nbt.setTag("CageItems", list);
+	        
+	        NBTTagCompound miscTag = new NBTTagCompound();
+	        
+	        miscTag.setBoolean("isCageClosed", tileEntityCage.isCageClosed());
+	        
+	        nbt.setTag("Misc", miscTag);
+	        
 	        if(tileEntityCage.getEntityData() != null) 
 		        nbt.setTag("EntityData", tileEntityCage.getEntityData());
 	        

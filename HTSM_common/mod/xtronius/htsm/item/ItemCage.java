@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.util.Util;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -25,33 +26,57 @@ public class ItemCage extends Item {
 	}
 	
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int meta, float hitX, float hitY, float hitZ) {
-		
-//		world.setTileEntity(x, y+1, x, new TileEntityCage(stack));
-		
-		if(!world.isRemote) {
-		
-			int xCoord = x;
-			int yCoord = y;
-			int zCoord = z;
-			
-			int playerX = (int) (player.posX -(int)player.posX > 0.5 ? Math.ceil(player.posX) : Math.floor(player.posX));
-			int playerZ = (int) (player.posZ -(int)player.posZ > 0.5 ? Math.ceil(player.posZ) : Math.floor(player.posZ));
-			
-			if (meta == 4) --xCoord;
-	        if (meta == 5) ++xCoord;
-			if (meta == 0) --yCoord;
-	        if (meta == 1) ++yCoord;
-	        if (meta == 2) --zCoord;
-	        if (meta == 3) ++zCoord;
-	        
-	        
-			if((xCoord == playerX && zCoord == playerZ) || !(world.getBlock(xCoord, yCoord, zCoord).equals(Blocks.air))) return false;
-			else {
-				world.setBlock(xCoord, yCoord, zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-				stack.stackSize--;
-			}
-			
-			TileEntityCage tileEntity = (TileEntityCage) world.getTileEntity(xCoord, yCoord, zCoord);
+        Block block = world.getBlock(x, y, z);
+
+        if (block == Blocks.snow_layer && (world.getBlockMetadata(x, y, z) & 7) < 1) {
+            meta = 1;
+        }
+        else if (block != Blocks.vine && block != Blocks.tallgrass && block != Blocks.deadbush && !block.isReplaceable(world, x, y, z)) {
+            if (meta == 0) --y;
+            if (meta == 1) ++y;
+            if (meta == 2) --z;
+            if (meta == 3) ++z;
+            if (meta == 4) --x;      
+            if (meta == 5) ++x;
+            
+        }
+
+        if (stack.stackSize == 0) {
+            return false;
+        }
+        else if (!player.canPlayerEdit(x, y, z, meta, stack))  {
+            return false;
+        }
+        else if (y == 255 && HTSM.blockInit.getBlockByName("BlockCage").getMaterial().isSolid()) {
+            return false;
+        }
+        else if (world.canPlaceEntityOnSide(HTSM.blockInit.getBlockByName("BlockCage"), x, y, z, false, meta, player, stack)) {
+            int i1 = this.getMetadata(stack.getItemDamage());
+            int j1 = HTSM.blockInit.getBlockByName("BlockCage").onBlockPlaced(world, x, y, z, meta, hitX, hitY, hitZ, i1);
+
+            if (placeBlockAt(stack, player, world, x, y, z, meta, hitX, hitY, hitZ, j1)) {
+                world.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), HTSM.blockInit.getBlockByName("BlockCage").stepSound.func_150496_b(), (HTSM.blockInit.getBlockByName("BlockCage").stepSound.getVolume() + 1.0F) / 2.0F, HTSM.blockInit.getBlockByName("BlockCage").stepSound.getPitch() * 0.8F);
+                --stack.stackSize;
+            }
+
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+	
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
+
+       if (!world.setBlock(x, y, z, HTSM.blockInit.getBlockByName("BlockCage"), metadata, 3)) {
+           return false;
+       }
+
+       if (world.getBlock(x, y, z) == HTSM.blockInit.getBlockByName("BlockCage")) {
+    	   HTSM.blockInit.getBlockByName("BlockCage").onBlockPlacedBy(world, x, y, z, player, stack);
+    	   HTSM.blockInit.getBlockByName("BlockCage").onPostBlockPlaced(world, x, y, z, metadata);
+    	   
+    	   TileEntityCage tileEntity = (TileEntityCage) world.getTileEntity(x, y, z);
 			
 			if(tileEntity != null) {
 				NBTTagCompound nbt = stack.getTagCompound();
@@ -69,6 +94,10 @@ public class ItemCage extends Item {
 			            }
 			        }
 			        
+			        NBTTagCompound compound3 = (NBTTagCompound) nbt.getTag("Misc");
+			        
+			        tileEntity.setCageClosed(compound3.getBoolean("isCageClosed"));
+			        
 			        NBTTagCompound compound2 = (NBTTagCompound) nbt.getTag("EntityData");
 			        tileEntity.setEntityData(compound2);
 			        
@@ -77,10 +106,42 @@ public class ItemCage extends Item {
 			        return true;
 				}
 			}
-		}
-		return true;
+       }
+
+       return true;
     }
 	
+	/* TileEntityCage tileEntity = (TileEntityCage) world.getTileEntity(xCoord, yCoord, zCoord);
+			
+			if(tileEntity != null) {
+				NBTTagCompound nbt = stack.getTagCompound();
+				
+				if(nbt != null && !nbt.hasNoTags()) {
+					
+					NBTTagList list = nbt.getTagList("CageItems", 10);
+	
+			        for (int i = 0; i < list.tagCount(); ++i) {
+			            NBTTagCompound compound1 = list.getCompoundTagAt(i);
+			            int j = compound1.getByte("Slot") & 255;
+	
+			            if (j >= 0 && j < 3) {
+			                tileEntity.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(compound1));
+			            }
+			        }
+			        
+			        NBTTagCompound compound3 = (NBTTagCompound) nbt.getTag("Misc");
+			        
+			        tileEntity.setCageClosed(compound3.getBoolean("isCageClosed"));
+			        
+			        NBTTagCompound compound2 = (NBTTagCompound) nbt.getTag("EntityData");
+			        tileEntity.setEntityData(compound2);
+			        
+			        if(tileEntity.getEntityData() != null)
+			        	tileEntity.setCageClosed(true);
+			        return true;
+				}
+			}
+	*/
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
 		super.addInformation(stack, player, list, par4);

@@ -6,36 +6,36 @@ import net.minecraft.entity.Entity;
 
 public class ModelCage extends ModelBase {
   //fields
-    ModelRenderer CageBot;
-    ModelRenderer CageTop;
-    ModelRenderer CagePostFrontLeft;
-    ModelRenderer CagePostFrontRight;
-    ModelRenderer CagePostBackLeft;
-    ModelRenderer CagePostBackRight;
-    ModelRenderer GateFrontBot;
-    ModelRenderer GateFrontTop;
-    ModelRenderer GateFrontPost1;
-    ModelRenderer GateFrontPost2;
-    ModelRenderer GateFrontPost3;
-    ModelRenderer GateFrontPost4;
-    ModelRenderer GateBackBot;
-    ModelRenderer GateBackTop;
-    ModelRenderer GateBackPost1;
-    ModelRenderer GateBackPost2;
-    ModelRenderer GateBackPost3;
-    ModelRenderer GateBackPost4;
-    ModelRenderer GateLeftBot;
-    ModelRenderer GateLeftTop;
-    ModelRenderer GateLeftPost1;
-    ModelRenderer GateLeftPost2;
-    ModelRenderer GateLeftPost3;
-    ModelRenderer GateLeftPost4;
-    ModelRenderer GateRightBot;
-    ModelRenderer GateRightTop;
-    ModelRenderer GateRightPost1;
-    ModelRenderer GateRightPost2;
-    ModelRenderer GateRightPost3;
-    ModelRenderer GateRightPost4;
+    public ModelRenderer CageBot;
+    public ModelRenderer CageTop;
+    public ModelRenderer CagePostFrontLeft;
+    public ModelRenderer CagePostFrontRight;
+    public ModelRenderer CagePostBackLeft;
+    public ModelRenderer CagePostBackRight;
+    public ModelRenderer GateFrontBot;
+    public ModelRenderer GateFrontTop;
+    public ModelRenderer GateFrontPost1;
+    public ModelRenderer GateFrontPost2;
+    public ModelRenderer GateFrontPost3;
+    public ModelRenderer GateFrontPost4;
+    public ModelRenderer GateBackBot;
+    public ModelRenderer GateBackTop;
+    public ModelRenderer GateBackPost1;
+    public ModelRenderer GateBackPost2;
+    public ModelRenderer GateBackPost3;
+    public ModelRenderer GateBackPost4;
+    public ModelRenderer GateLeftBot;
+    public ModelRenderer GateLeftTop;
+    public ModelRenderer GateLeftPost1;
+    public ModelRenderer GateLeftPost2;
+    public ModelRenderer GateLeftPost3;
+    public ModelRenderer GateLeftPost4;
+    public ModelRenderer GateRightBot;
+    public ModelRenderer GateRightTop;
+    public ModelRenderer GateRightPost1;
+    public ModelRenderer GateRightPost2;
+    public ModelRenderer GateRightPost3;
+    public ModelRenderer GateRightPost4;
   
   public ModelCage() {
     textureWidth = 512;
@@ -221,6 +221,41 @@ public class ModelCage extends ModelBase {
       GateRightPost4.setTextureSize(64, 32);
       GateRightPost4.mirror = true;
       setRotation(GateRightPost4, 0F, 0F, 0F);
+      
+      convertToChild(this.GateBackTop, this.GateBackPost1);
+      convertToChild(this.GateBackTop, this.GateBackPost2);
+      convertToChild(this.GateBackTop, this.GateBackPost3);
+      convertToChild(this.GateBackTop, this.GateBackPost4);
+      convertToChild(this.GateBackTop, this.GateBackBot);
+      
+      convertToChild(this.GateFrontTop, this.GateFrontPost1);
+      convertToChild(this.GateFrontTop, this.GateFrontPost2);
+      convertToChild(this.GateFrontTop, this.GateFrontPost3);
+      convertToChild(this.GateFrontTop, this.GateFrontPost4);
+      convertToChild(this.GateFrontTop, this.GateFrontBot);
+      
+      convertToChild(this.GateLeftTop, this.GateLeftPost1);
+      convertToChild(this.GateLeftTop, this.GateLeftPost2);
+      convertToChild(this.GateLeftTop, this.GateLeftPost3);
+      convertToChild(this.GateLeftTop, this.GateLeftPost4);
+      convertToChild(this.GateLeftTop, this.GateLeftBot);
+      
+      convertToChild(this.GateRightTop, this.GateRightPost1);
+      convertToChild(this.GateRightTop, this.GateRightPost2);
+      convertToChild(this.GateRightTop, this.GateRightPost3);
+      convertToChild(this.GateRightTop, this.GateRightPost4);
+      convertToChild(this.GateRightTop, this.GateRightBot);
+  }
+  
+  /**Converts the child's rotation points and rotation to be relative to the parent's rotation points and rotation. NOTE: the child must be removed from the render method, other wise double rendering occurs!*/
+  public void convertToChild(ModelRenderer parent, ModelRenderer child) {
+		 child.rotationPointX -= parent.rotationPointX;
+	     child.rotationPointY -= parent.rotationPointY;
+	     child.rotationPointZ -= parent.rotationPointZ;
+	     child.rotateAngleX -= parent.rotateAngleX;
+	     child.rotateAngleY -= parent.rotateAngleY;
+	     child.rotateAngleZ -= parent.rotateAngleZ;
+	     parent.addChild(child);
   }
   
   public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -265,30 +300,31 @@ public class ModelCage extends ModelBase {
     CagePostFrontRight.render(f);
     CagePostBackLeft.render(f);
     CagePostBackRight.render(f);
-    GateFrontBot.render(f);
+//    GateFrontBot.render(f);
     GateFrontTop.render(f);
-    GateFrontPost1.render(f);
-    GateFrontPost2.render(f);
-    GateFrontPost3.render(f);
-    GateFrontPost4.render(f);
-    GateBackBot.render(f);
+//    GateFrontPost1.render(f);
+//    GateFrontPost2.render(f);
+//    GateFrontPost3.render(f);
+//    GateFrontPost4.render(f);
+//    GateBackBot.render(f);
     GateBackTop.render(f);
-    GateBackPost1.render(f);
-    GateBackPost2.render(f);
-    GateBackPost3.render(f);
-    GateBackPost4.render(f);
-    GateLeftBot.render(f);
+//    GateBackPost1.render(f);
+//    GateBackPost2.render(f);
+//    GateBackPost3.render(f);
+//    GateBackPost4.render(f);
+//    GateLeftBot.render(f);
     GateLeftTop.render(f);
-    GateLeftPost1.render(f);
-    GateLeftPost2.render(f);
-    GateLeftPost3.render(f);
-    GateLeftPost4.render(f);
-    GateRightBot.render(f);
+//    GateLeftPost1.render(f);
+//    GateLeftPost2.render(f);
+//    GateLeftPost3.render(f);
+//    GateLeftPost4.render(f);
+//    GateRightBot.render(f);
     GateRightTop.render(f);
-    GateRightPost1.render(f);
-    GateRightPost2.render(f);
-    GateRightPost3.render(f);
-    GateRightPost4.render(f);
+//    GateRightPost1.render(f);
+//    GateRightPost2.render(f);
+//    GateRightPost3.render(f);
+//    GateRightPost4.render(f);
+   
   }
   
   private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.util.list.CageList;
+import mod.xtronius.htsm.util.list.ModelCageList;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.relauncher.Side;
 
@@ -15,6 +16,7 @@ public class CommonProxy implements IProxy{
 	
 	public void initMiscInfo() {
 		HTSM.cageList = new CageList();
+		HTSM.modelCageList = new ModelCageList();
 	}
 
 	@Override

@@ -125,6 +125,18 @@ public class BlockCage extends HTSMBlockContainer{
 	
 	public void onBlockAdded(World world, int x, int y, int z) { super.onBlockAdded(world, x, y, z); }
 	
+	public boolean canProvidePower() {
+        return true;
+    }
+	
+	public int isProvidingWeakPower(IBlockAccess blockAccess, int x, int y, int z, int meta) {
+		TileEntityCage tileEntity = (TileEntityCage) blockAccess.getTileEntity(x, y, z);
+		if(!tileEntity.getWorldObj().isRemote) 
+	        if(tileEntity != null) 
+	        	if(tileEntity.getEntityData() != null) return 15;
+		return 0;
+    }
+	
 	public int getRenderType() { return -1; }
 	public boolean isOpaqueCube() { return false; }
 	@SideOnly(Side.CLIENT)

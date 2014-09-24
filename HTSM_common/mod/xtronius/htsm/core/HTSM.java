@@ -11,8 +11,10 @@ import mod.xtronius.htsm.handlers.HTSMItemInitializer;
 import mod.xtronius.htsm.handlers.HTSMItemRegistry;
 import mod.xtronius.htsm.lib.Reference;
 import mod.xtronius.htsm.packet.PacketCageData;
+import mod.xtronius.htsm.packet.PacketToggleCageGate;
 import mod.xtronius.htsm.proxy.CommonProxy;
 import mod.xtronius.htsm.util.list.CageList;
+import mod.xtronius.htsm.util.list.ModelCageList;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
@@ -43,11 +45,13 @@ public class HTSM {
 	public static HTSMItemInitializer itemInit = HTSMItemInitializer.instance;
 	
 	public static SimpleNetworkWrapper network;
+	public static SimpleNetworkWrapper network2;
 	
 	@Instance(Reference.MOD_ID)
 	public static HTSM instance;
 	
 	public static CageList cageList;
+	public static ModelCageList modelCageList;
 	
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -91,6 +95,8 @@ public class HTSM {
     private void initChannels() {
     	 network = NetworkRegistry.INSTANCE.newSimpleChannel("packetCageData");
 		 network.registerMessage(PacketCageData.Handler.class, PacketCageData.class, 0, Side.CLIENT);
+		 network2 = NetworkRegistry.INSTANCE.newSimpleChannel("packetToggleCageGate");
+		 network2.registerMessage(PacketToggleCageGate.Handler.class, PacketToggleCageGate.class, 0, Side.SERVER);
 		 
 //		 MyMod.network.sendToServer(new MyMessage("foobar"));
 //		 MyMod.network.sendTo(new SomeMessage(), somePlayer);
