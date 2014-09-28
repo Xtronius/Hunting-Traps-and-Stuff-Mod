@@ -20,7 +20,7 @@ public class Reference {
     /**
      *	The common proxy class for the mod
      */
-    public static final String SERVER_PROXY_CLASS = "mod.xtronius.htsm.proxy.CommonProxy";
+    public static final String SERVER_PROXY_CLASS = "mod.xtronius.htsm.proxy.ServerProxy";
     
     /**
      * 	The client specific proxy class for the mod

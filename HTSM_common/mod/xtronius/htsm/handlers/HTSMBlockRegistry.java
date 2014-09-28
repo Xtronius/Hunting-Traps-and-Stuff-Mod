@@ -29,5 +29,6 @@ public class HTSMBlockRegistry {
 	private void regBlockManual() {
 //		GameRegistry.registerTileEntity(TileEntityExample.class, "BlockExample");
 		GameRegistry.registerTileEntity(TileEntityCage.class, "BlockCage");
+		GameRegistry.registerTileEntity(TileEntityPlaque.class, "BlockPlaque");
 	}
 }

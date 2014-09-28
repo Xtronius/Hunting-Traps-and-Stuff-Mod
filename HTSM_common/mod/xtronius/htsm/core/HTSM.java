@@ -2,32 +2,19 @@ package mod.xtronius.htsm.core;
 
 import java.util.EnumMap;
 
-import mod.xtronius.htsm.handlers.GuiHandler;
-import mod.xtronius.htsm.handlers.HTSMBlockInitializer;
-import mod.xtronius.htsm.handlers.HTSMBlockRegistry;
-import mod.xtronius.htsm.handlers.HTSMEventInitializer;
-import mod.xtronius.htsm.handlers.HTSMIDHandler;
-import mod.xtronius.htsm.handlers.HTSMItemInitializer;
-import mod.xtronius.htsm.handlers.HTSMItemRegistry;
+import mod.xtronius.htsm.handlers.*;
 import mod.xtronius.htsm.lib.Reference;
-import mod.xtronius.htsm.packet.PacketCageData;
-import mod.xtronius.htsm.packet.PacketToggleCageGate;
-import mod.xtronius.htsm.proxy.CommonProxy;
-import mod.xtronius.htsm.util.list.CageList;
-import mod.xtronius.htsm.util.list.ModelCageList;
-import net.minecraft.command.ICommandManager;
-import net.minecraft.command.ServerCommandManager;
+import mod.xtronius.htsm.packet.*;
+import mod.xtronius.htsm.proxy.*;
+import mod.xtronius.htsm.util.Debug;
+import mod.xtronius.htsm.util.list.*;
+import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.*;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.network.*;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -40,12 +27,14 @@ public class HTSM {
 	
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	
-	public static CommonProxy proxy;
+	public static IProxy proxy;
 	public static HTSMBlockInitializer blockInit = HTSMBlockInitializer.instance;
 	public static HTSMItemInitializer itemInit = HTSMItemInitializer.instance;
 	
-	public static SimpleNetworkWrapper network;
-	public static SimpleNetworkWrapper network2;
+	
+	public static PacketHandler ch = new PacketHandler();
+	
+	public static Debug debug = new Debug();
 	
 	@Instance(Reference.MOD_ID)
 	public static HTSM instance;
@@ -56,7 +45,7 @@ public class HTSM {
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 		
-		this.initChannels();
+		proxy.initPacketInfo();
 		
 		new HTSMBlockInitializer();
 		new HTSMItemInitializer();
@@ -72,6 +61,7 @@ public class HTSM {
     
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+		
 		new HTSMBlockRegistry();
 		HTSMItemRegistry.ItemReg();
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
@@ -79,7 +69,7 @@ public class HTSM {
     	
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-    	proxy.registerRenderInformation();
+    	proxy.initRenderingAndTextures();
     	proxy.initSounds();
     	proxy.initMiscInfo();
     }
@@ -90,16 +80,6 @@ public class HTSM {
     	 ICommandManager command = server.getCommandManager();
     	 ServerCommandManager manager = (ServerCommandManager) command;
 //    	 manager.registerCommand(new ResetLvlNBT());
-    }
-    
-    private void initChannels() {
-    	 network = NetworkRegistry.INSTANCE.newSimpleChannel("packetCageData");
-		 network.registerMessage(PacketCageData.Handler.class, PacketCageData.class, 0, Side.CLIENT);
-		 network2 = NetworkRegistry.INSTANCE.newSimpleChannel("packetToggleCageGate");
-		 network2.registerMessage(PacketToggleCageGate.Handler.class, PacketToggleCageGate.class, 0, Side.SERVER);
-		 
-//		 MyMod.network.sendToServer(new MyMessage("foobar"));
-//		 MyMod.network.sendTo(new SomeMessage(), somePlayer);
     }
 }
 

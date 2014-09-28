@@ -83,7 +83,7 @@ public class GuiCage extends GuiContainer {
     }
     
     private void updateGate(Boolean toggle) {
-    	HTSM.network2.sendToServer(new PacketToggleCageGate(toggle, this.x, this.y, this.z));
+    	HTSM.ch.getChannel("packetToggleCageGate").sendToServer(new PacketToggleCageGate(toggle, this.x, this.y, this.z));
     }
     
     protected void actionPerformed(GuiButton button) {

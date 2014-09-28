@@ -22,7 +22,7 @@ import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCage extends HTSMBlockContainer{
+public class BlockCage extends HTSMBlockContainer {
 	
 	private Random rand = new Random();
 

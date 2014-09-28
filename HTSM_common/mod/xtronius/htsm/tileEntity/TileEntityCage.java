@@ -20,7 +20,7 @@ import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityCage extends TileEntity implements IInventory{
 	
-	private ItemStack[] cageContents = new ItemStack[3];
+	private ItemStack[] invContents = new ItemStack[3];
 
 	private boolean isCageClosed = true;
 	private boolean isProcessing = false;
@@ -152,13 +152,13 @@ public class TileEntityCage extends TileEntity implements IInventory{
         super.readFromNBT(compound);   
         
         NBTTagList list = compound.getTagList("Items", 10);
-        this.cageContents = new ItemStack[this.getSizeInventory()];
+        this.invContents = new ItemStack[this.getSizeInventory()];
 
         for (int i = 0; i < list.tagCount(); ++i) {
             NBTTagCompound compound1 = list.getCompoundTagAt(i);
             int j = compound1.getByte("Slot") & 255;
 
-            if (j >= 0 && j < this.cageContents.length)  this.cageContents[j] = ItemStack.loadItemStackFromNBT(compound1);
+            if (j >= 0 && j < this.invContents.length)  this.invContents[j] = ItemStack.loadItemStackFromNBT(compound1);
         }
         
         NBTTagCompound compound2 = (NBTTagCompound) compound.getTag("EntityData");
@@ -173,11 +173,11 @@ public class TileEntityCage extends TileEntity implements IInventory{
         super.writeToNBT(compound);
         NBTTagList list = new NBTTagList();
         
-        for (int i = 0; i < this.cageContents.length; ++i) {
-            if (this.cageContents[i] != null) {
+        for (int i = 0; i < this.invContents.length; ++i) {
+            if (this.invContents[i] != null) {
                 NBTTagCompound compound1 = new NBTTagCompound();
                 compound1.setByte("Slot", (byte)i);
-                this.cageContents[i].writeToNBT(compound1);
+                this.invContents[i].writeToNBT(compound1);
                 list.appendTag(compound1);
             }
         }
@@ -226,32 +226,31 @@ public class TileEntityCage extends TileEntity implements IInventory{
 		int item = 0;
 		
 		for(int i = 0; i < this.getSizeInventory(); i++) if(this.getStackInSlot(i) != null) { item = Item.getIdFromItem(this.getStackInSlot(i).getItem()); break;}
-		
-		HTSM.network.sendToAll(new PacketCageData(id, this.entityData, this.isCageClosed(), item, this.xCoord, this.yCoord, this.zCoord)); 
+		HTSM.ch.getChannel("packetCageData").sendToAll(new PacketCageData(id, this.entityData, this.isCageClosed(), item, this.xCoord, this.yCoord, this.zCoord)); 
 	}
 	
 	@Override
 	public int getSizeInventory() { return 3; }
 
 	@Override
-	public ItemStack getStackInSlot(int slot) { return this.cageContents[slot]; }
+	public ItemStack getStackInSlot(int slot) { return this.invContents[slot]; }
 
 	@Override
 	public ItemStack decrStackSize(int slotIndex, int i) {
-		 if (this.cageContents[slotIndex] != null) {
+		 if (this.invContents[slotIndex] != null) {
 	            ItemStack itemstack;
 
-	            if (this.cageContents[slotIndex].stackSize <= i) {
-	                itemstack = this.cageContents[slotIndex];
-	                this.cageContents[slotIndex] = null;
+	            if (this.invContents[slotIndex].stackSize <= i) {
+	                itemstack = this.invContents[slotIndex];
+	                this.invContents[slotIndex] = null;
 	                this.markDirty();
 	                return itemstack;
 	            }
 	            else {
-	                itemstack = this.cageContents[slotIndex].splitStack(i);
+	                itemstack = this.invContents[slotIndex].splitStack(i);
 	                
-	                if (this.cageContents[slotIndex].stackSize == 0) 
-	                    this.cageContents[slotIndex] = null;
+	                if (this.invContents[slotIndex].stackSize == 0) 
+	                    this.invContents[slotIndex] = null;
 	                
 	                this.markDirty();
 	                return itemstack;
@@ -261,10 +260,10 @@ public class TileEntityCage extends TileEntity implements IInventory{
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) { return this.cageContents[slot]; }
+	public ItemStack getStackInSlotOnClosing(int slot) { return this.invContents[slot]; }
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) { this.cageContents[slot] = stack; }
+	public void setInventorySlotContents(int slot, ItemStack stack) { this.invContents[slot] = stack; }
 
 	@Override
 	public String getInventoryName() { return "Cage"; }
