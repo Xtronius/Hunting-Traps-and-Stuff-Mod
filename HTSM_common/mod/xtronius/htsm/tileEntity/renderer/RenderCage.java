@@ -63,11 +63,10 @@ public class RenderCage extends TileEntitySpecialRenderer{
 			if(tileEntityCage.getEntityData() != null) {
 				renderEntityByName(tileEntityCage, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 			} else {
-				Item item = Item.getItemById(tileEntityCage.item);
+				ItemStack displayStack = tileEntityCage.displayStack;
 				
-				if(item != null) {
-					ItemStack stack = new ItemStack(item, 1, 0);
-					EntityItem entItem = new EntityItem(Minecraft.getMinecraft().thePlayer.getEntityWorld(), x, y, z, stack);
+				if(displayStack != null) {
+					EntityItem entItem = new EntityItem(Minecraft.getMinecraft().thePlayer.getEntityWorld(), x, y, z, displayStack);
 					
 					entItem.hoverStart = 0.0F;
 					RenderItem.renderInFrame = true;

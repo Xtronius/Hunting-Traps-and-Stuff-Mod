@@ -3,6 +3,7 @@
 import io.netty.buffer.ByteBuf;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -13,19 +14,19 @@ public class PacketCageData implements IMessage{
 	
 	String entityID;
 	NBTTagCompound nbt;
+	ItemStack stack;
 	boolean isGateClosed;
-	int item;
 	int x;
 	int y;
 	int z;
 	
 	public PacketCageData(){}
     
-    public PacketCageData(String entityID, NBTTagCompound nbt, boolean isGateClosed, int item, int x, int y, int z) {
+    public PacketCageData(String entityID, NBTTagCompound nbt, ItemStack stack, boolean isGateClosed, int x, int y, int z) {
         this.entityID = entityID;
         this.nbt = nbt;
+        this.stack = stack;
         this.isGateClosed = isGateClosed;
-        this.item = item;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -35,8 +36,8 @@ public class PacketCageData implements IMessage{
 	public void fromBytes(ByteBuf bytes) {
 		this.entityID = ByteBufUtils.readUTF8String(bytes);
 		this.nbt = ByteBufUtils.readTag(bytes);
+		this.stack = ByteBufUtils.readItemStack(bytes);
 		this.isGateClosed = bytes.readBoolean();
-		this.item = bytes.readInt();
 		this.x = bytes.readInt();
 		this.y = bytes.readInt();
 		this.z = bytes.readInt();
@@ -46,8 +47,8 @@ public class PacketCageData implements IMessage{
 	public void toBytes(ByteBuf bytes) {
 		ByteBufUtils.writeUTF8String(bytes, this.entityID);
 		ByteBufUtils.writeTag(bytes, this.nbt);
+		ByteBufUtils.writeItemStack(bytes, this.stack);
 		bytes.writeBoolean(isGateClosed);
-		bytes.writeInt(this.item);
 		bytes.writeInt(this.x);
 	    bytes.writeInt(this.y);
 		bytes.writeInt(this.z);
@@ -63,7 +64,7 @@ public class PacketCageData implements IMessage{
         		tileEntity.targetEntityID = message.entityID;
         		tileEntity.setEntityData(message.nbt);
         		tileEntity.setCageClosed(message.isGateClosed);
-        		tileEntity.item = message.item;
+        		tileEntity.displayStack = message.stack;
         	}
             return null;
         }

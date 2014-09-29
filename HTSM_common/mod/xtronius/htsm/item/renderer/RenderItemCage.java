@@ -38,41 +38,46 @@ public class RenderItemCage implements IItemRenderer {
     public void renderItem(ItemRenderType itemRenderType, ItemStack stack, Object... data) {
         switch (itemRenderType) {
             case ENTITY: {
-            	renderCage(stack, 0.0F, 0.5F, 0.0F, stack.getItemDamage());
+            	renderCage(stack, stack.getItemDamage(), 0.0f, 0.0F, 0.0F, 0.0F, 0.5F, 0.0F, 0.5F, 0.5F, 0.5F);
                 break;
             }
             case EQUIPPED: {
-            	renderCage(stack, 0.5F, 0.5F, 0.5F, stack.getItemDamage());
+            	renderCage(stack, stack.getItemDamage(), 0.5F, 0.5F, 0.5F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F);
                 break;
             }
             case EQUIPPED_FIRST_PERSON: {
-            	renderCage(stack, 1.0F, 1.0F, 0.75F, stack.getItemDamage());
+            	renderCage(stack, stack.getItemDamage(), 0.0F, 1.0F, 0.71875F, 0.0F, 0.75F, 0.0F, 1.0F, 1.0F, 1.0F);
                 break;
             }
             case INVENTORY: {
-            	renderCage(stack, 0.0F, 0.0F, 0.0F, stack.getItemDamage());
+            	renderCage(stack, stack.getItemDamage(), 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F);
                 break;
             }
             default:
                 break;
         }
     }
+    
+    private void renderCage(ItemStack stack, int meta, float posX, float posY, float posZ) {
+    	renderCage(stack, meta, posX, posY, posZ, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+    }
 
-    private void renderCage(ItemStack stack, float x, float y, float z, int metaData) {
+    private void renderCage(ItemStack stack, int meta, float posX, float posY, float posZ, float transX, float transY, float transZ, float scaleX, float scaleY, float scaleZ) {
     	
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         
         GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glTranslatef((float)x, (float)y+1f, (float)z);
+		GL11.glTranslatef((float)posX + transX, (float)posY + transY, (float)posZ + transZ);
 		GL11.glRotatef(180F, 0F, 0F, 1F);
+		GL11.glScalef(scaleX, scaleY, scaleZ);
 
 		this.modelCage.renderModel(0.0625F);
 		
-//		if(tileEntity instanceof TileEntityCage) {w
+//		if(tileEntity instanceof TileEntityCage) {
 //			TileEntityCage tileEntityCage = (TileEntityCage)tileEntity;
 			if(stack.getTagCompound() != null && stack.getTagCompound().getTag("EntityData") != null)
-				renderEntityByName(stack, x, y, z);
+				renderEntityByName(stack, posX, posY, posZ);
 //		}
 		
 		GL11.glEnable(GL11.GL_LIGHTING);

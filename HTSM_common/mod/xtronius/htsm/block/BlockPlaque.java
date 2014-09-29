@@ -54,21 +54,43 @@ public class BlockPlaque extends HTSMBlockContainer {
 	    		
 	    		if(tileEntity != null) {
 	    			
-	    			ItemStack stack1 = tileEntity.getStackInSlot(0);
-	    			ItemStack stack2 = player.getCurrentEquippedItem();
+	    			ItemStack plaqueStack = tileEntity.getStackInSlot(0);
+	    			ItemStack playerStack = player.getCurrentEquippedItem();
 	    			
-	    			if(stack1 == null) {    			
-		    			tileEntity.setInventorySlotContents(0, stack2);
-		    			player.setCurrentItemOrArmor(0, null);
+	    			if(plaqueStack == null) {
+	    				ItemStack stack = playerStack.copy();
+	    				if(playerStack.stackSize > 1) {
+	    					playerStack.stackSize--;
+	    					player.setCurrentItemOrArmor(0, playerStack);
+	    					stack.stackSize = 1;
+	    					tileEntity.setInventorySlotContents(0, stack);
+	    				} else if(playerStack.stackSize == 1) {
+	    					tileEntity.setInventorySlotContents(0, stack);
+	    					player.setCurrentItemOrArmor(0, null);
+	    				} else {
+	    					HTSM.debug.printerrln("The stack size should not be less than 1!");
+	    				}
 	    			} else {
-	    				if(stack2 == null) {
-	    					EntityItem item = new EntityItem(world, x, y, z, stack1);
+	    				if(playerStack == null) {
+	    					EntityItem item = new EntityItem(world, x, y, z, plaqueStack);
 	    					tileEntity.setInventorySlotContents(0, null);
 	    					world.spawnEntityInWorld(item);
 	    				} else {
-	    					EntityItem item = new EntityItem(world, x, y, z, stack1);
-	    					tileEntity.setInventorySlotContents(0, stack2);
-	    					player.setCurrentItemOrArmor(0, null);
+	    					ItemStack stack = playerStack.copy();
+	    					EntityItem item = new EntityItem(world, x, y, z, plaqueStack);
+	    					
+	    					if(playerStack.stackSize > 1) {
+		    					playerStack.stackSize--;
+		    					player.setCurrentItemOrArmor(0, playerStack);
+		    					stack.stackSize = 1;
+		    					tileEntity.setInventorySlotContents(0, stack);
+		    				} else if(playerStack.stackSize == 1) {
+		    					tileEntity.setInventorySlotContents(0, stack);
+		    					player.setCurrentItemOrArmor(0, null);
+		    				} else {
+		    					HTSM.debug.printerrln("The stack size should not be less than 1!");
+		    				}
+	    					
 	    					world.spawnEntityInWorld(item);
 	    					item.setPosition(player.posX, player.posY, player.posZ);
 	    				}

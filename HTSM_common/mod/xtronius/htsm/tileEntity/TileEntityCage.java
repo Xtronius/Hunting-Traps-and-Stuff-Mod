@@ -31,7 +31,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 	/**Client-Side Variable*/
 	public String targetEntityID;
 	/**Client-Side Variable*/
-	public int item;
+	public ItemStack displayStack;
 	
 	private int timer = 0;
 	private float seconds = 0.75f;
@@ -223,10 +223,10 @@ public class TileEntityCage extends TileEntity implements IInventory{
 	
 	private void updateClient(String id) { 
 		
-		int item = 0;
+		ItemStack stack = null;
 		
-		for(int i = 0; i < this.getSizeInventory(); i++) if(this.getStackInSlot(i) != null) { item = Item.getIdFromItem(this.getStackInSlot(i).getItem()); break;}
-		HTSM.ch.getChannel("packetCageData").sendToAll(new PacketCageData(id, this.entityData, this.isCageClosed(), item, this.xCoord, this.yCoord, this.zCoord)); 
+		for(int i = 0; i < this.getSizeInventory(); i++) if(this.getStackInSlot(i) != null) { stack = this.getStackInSlot(i); break;}
+		HTSM.ch.getChannel("packetCageData").sendToAll(new PacketCageData(id, this.entityData, stack, this.isCageClosed(), this.xCoord, this.yCoord, this.zCoord)); 
 	}
 	
 	@Override
