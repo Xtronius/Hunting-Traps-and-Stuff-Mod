@@ -37,47 +37,6 @@ public class BlockCage extends HTSMBlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
     	if(!world.isRemote) {
 	    	if(player.isSneaking())  {
-	    		
-//	    		if(player.inventory != null && player.inventory.getCurrentItem() == null) {
-////	    			if(player.inventory.getCurrentItem().getItem().equals(HTSM.itemInit.getItemByName("ItemUniversalMultiTool"))) {
-//	    				
-//	    				TileEntityCage tileEntity = (TileEntityCage) world.getTileEntity(x, y, z);
-//	    				
-//	    				ItemStack stack = new ItemStack(HTSM.itemInit.getItemByName("ItemCage")); 
-//	    				
-//	    				stack.setTagCompound(new NBTTagCompound());
-//	    				
-//	    				NBTTagCompound nbt = stack.stackTagCompound;
-//	    				
-//	    				NBTTagList list = new NBTTagList();
-//	    		        
-//	    		        for (int i = 0; i < 3; ++i) {
-//	    		            if (tileEntity.getStackInSlot(i) != null) {
-//	    		                NBTTagCompound compound1 = new NBTTagCompound();
-//	    		                compound1.setByte("Slot", (byte)i);
-//	    		                tileEntity.getStackInSlot(i).writeToNBT(compound1);
-//	    		                list.appendTag(compound1);
-//	    		            }
-//	    		        }
-//	    		        
-//	    		        nbt.setTag("CageItems", list);
-//	    		        
-//	    		        if(tileEntity.getEntityData() != null) {
-//	    			        nbt.setTag("EntityData", tileEntity.getEntityData());
-//	    		        }
-//	    		        
-//	    				player.inventory.addItemStackToInventory(stack);
-//	    				
-//	    				for(int i = 0; i < tileEntity.getSizeInventory(); i++)
-//    						tileEntity.setInventorySlotContents(i, null);;
-//    				
-//    					tileEntity.setEntityData(null);
-//    					tileEntity.releaseEntity();
-//	    				
-//	    				world.setBlockToAir(x, y, z);
-////	    			}
-//	    		}
-	    		
     	    	return true;
 	    	} else {
 		    	FMLNetworkHandler.openGui(player, HTSM.instance, GuiIDs.guiCageID, world, x, y, z);

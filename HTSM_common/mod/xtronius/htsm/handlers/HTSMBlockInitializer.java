@@ -23,6 +23,7 @@ public class HTSMBlockInitializer {
 	private void init() {
 		addBlock(new BlockCage(), "BlockCage");
 		addBlock(new BlockPlaque(), "BlockPlaque");
+		addBlock(new BlockSpike(), "BlockSpike");
 	}
 	
 	private void addBlock(Block block, String name) { 

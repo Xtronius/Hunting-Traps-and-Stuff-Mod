@@ -33,7 +33,7 @@ public class BlockPlaque extends HTSMBlockContainer {
 	private Random rand = new Random();
 	
 	public BlockPlaque() {
-		super(Material.iron);
+		super(Material.rock);
 		this.setBlockTextureName("BlockCage");
 		this.setLightOpacity(0);
 		this.setCreativeTab(CreativeTabs.tabBlock);

@@ -22,13 +22,12 @@ public class HTSMBlockRegistry {
 
 	private void regBlockAuto(Block block, String name) {	
 		GameRegistry.registerBlock(block, name);
-		
-		GameRegistry.addShapelessRecipe(new ItemStack(block, 64), new ItemStack(Blocks.dirt));
 	}
 	
 	private void regBlockManual() {
 //		GameRegistry.registerTileEntity(TileEntityExample.class, "BlockExample");
 		GameRegistry.registerTileEntity(TileEntityCage.class, "BlockCage");
 		GameRegistry.registerTileEntity(TileEntityPlaque.class, "BlockPlaque");
+		GameRegistry.registerTileEntity(TileEntitySpike.class, "BlockSpike");
 	}
 }
