@@ -3,6 +3,7 @@ package mod.xtronius.htsm.tileEntity.gui;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.lib.Reference;
 import mod.xtronius.htsm.packet.PacketToggleCageGate;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
@@ -83,7 +84,7 @@ public class GuiCage extends GuiContainer {
     }
     
     private void updateGate(Boolean toggle) {
-    	HTSM.ch.getChannel("packetToggleCageGate").sendToServer(new PacketToggleCageGate(toggle, this.x, this.y, this.z));
+    	PacketHandler.INSTANCE.getPacketFrom(new PacketToggleCageGate(toggle, this.x, this.y, this.z));
     }
     
     protected void actionPerformed(GuiButton button) {

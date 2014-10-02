@@ -1,26 +1,19 @@
 package mod.xtronius.htsm.tileEntity;
 
-import java.util.ArrayList;
-
-import mod.xtronius.htsm.core.HTSM;
-import mod.xtronius.htsm.packet.PacketCageData;
-import mod.xtronius.htsm.packet.PacketPlaqueData;
-import mod.xtronius.htsm.tileEntity.renderer.model.ModelPlaque;
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
+import mod.xtronius.htsm.handlers.PacketHandler;
+import mod.xtronius.htsm.packet.PacketSpikeData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySpike extends TileEntity implements IInventory{
 	
+	private ForgeDirection orientation = ForgeDirection.UP;
 	private ItemStack[] invContents = new ItemStack[1];
 
 	private int timer = 0;
@@ -49,6 +42,12 @@ public class TileEntitySpike extends TileEntity implements IInventory{
 
             if (j >= 0 && j < this.invContents.length)  this.invContents[j] = ItemStack.loadItemStackFromNBT(compound1);
         }
+        
+        NBTTagCompound nbtBlockData = (NBTTagCompound) compound.getTag("BlockData");
+        
+        if (nbtBlockData.hasKey("BlockOrientation")) {
+            this.orientation = ForgeDirection.getOrientation(nbtBlockData.getByte("BlockOrientation"));
+        }
     }
 
 	@Override
@@ -66,9 +65,17 @@ public class TileEntitySpike extends TileEntity implements IInventory{
         }
         
         compound.setTag("Items", list);
+        
+        NBTTagCompound nbtBlockData = new NBTTagCompound();
+        
+        nbtBlockData.setByte("BlockOrientation", (byte) orientation.ordinal());
     }
 	
-	private void updateClient() {}
+	 @Override
+    public Packet getDescriptionPacket() {
+		 return PacketHandler.INSTANCE.getPacketFrom(new PacketSpikeData((byte) this.getOrientation().ordinal(), this.xCoord, this.yCoord, this.zCoord));
+    }
+	
 	
 	@Override
 	public int getSizeInventory() { return 1; }
@@ -129,4 +136,8 @@ public class TileEntitySpike extends TileEntity implements IInventory{
 
 	private int getDelay() { return (int) (this.seconds * 20);}
 	private void incrementTimer() { if(timer <= getDelay()) timer++;else timer = 0; }
+	
+	public ForgeDirection getOrientation() { return orientation; }
+    public void setOrientation(ForgeDirection orientation) { this.orientation = orientation; }
+    public void setOrientation(int orientation) { this.orientation = ForgeDirection.getOrientation(orientation); }
 }

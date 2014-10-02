@@ -3,6 +3,7 @@ package mod.xtronius.htsm.tileEntity;
 import java.util.ArrayList;
 
 import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.packet.PacketCageData;
 import mod.xtronius.htsm.tileEntity.renderer.model.ModelCage;
 import net.minecraft.block.Block;
@@ -226,7 +227,7 @@ public class TileEntityCage extends TileEntity implements IInventory{
 		ItemStack stack = null;
 		
 		for(int i = 0; i < this.getSizeInventory(); i++) if(this.getStackInSlot(i) != null) { stack = this.getStackInSlot(i); break;}
-		HTSM.ch.getChannel("packetCageData").sendToAll(new PacketCageData(id, this.entityData, stack, this.isCageClosed(), this.xCoord, this.yCoord, this.zCoord)); 
+		PacketHandler.INSTANCE.getPacketFrom(new PacketCageData(id, this.entityData, stack, this.isCageClosed(), this.xCoord, this.yCoord, this.zCoord)); 
 	}
 	
 	@Override

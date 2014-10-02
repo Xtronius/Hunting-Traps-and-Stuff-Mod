@@ -3,6 +3,7 @@ package mod.xtronius.htsm.block;
 import java.util.Random;
 
 import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.packet.PacketPlaqueData;
 import mod.xtronius.htsm.tileEntity.TileEntityPlaque;
 import mod.xtronius.htsm.tileEntity.gui.GuiIDs;
@@ -96,7 +97,7 @@ public class BlockPlaque extends HTSMBlockContainer {
 	    				}
 	    			}
 	    			
-					HTSM.ch.getChannel("packetPlaqueData").sendToAll(new PacketPlaqueData(tileEntity.getStackInSlot(0), x, y, z));
+					PacketHandler.INSTANCE.getPacketFrom(new PacketPlaqueData(tileEntity.getStackInSlot(0), x, y, z));
 	    		}
 	    		
 	    		return true;

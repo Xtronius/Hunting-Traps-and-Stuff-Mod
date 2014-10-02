@@ -3,6 +3,7 @@ package mod.xtronius.htsm.tileEntity;
 import java.util.ArrayList;
 
 import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.packet.PacketCageData;
 import mod.xtronius.htsm.packet.PacketPlaqueData;
 import mod.xtronius.htsm.tileEntity.renderer.model.ModelPlaque;
@@ -33,7 +34,7 @@ public class TileEntityPlaque extends TileEntity implements IInventory{
 		
 		if(!this.worldObj.isRemote) {
 			if(timer == getDelay()) {
-				HTSM.ch.getChannel("packetPlaqueData").sendToAll(new PacketPlaqueData(this.getStackInSlot(0), this.xCoord, this.yCoord, this.zCoord));
+				PacketHandler.INSTANCE.getPacketFrom(new PacketPlaqueData(this.getStackInSlot(0), this.xCoord, this.yCoord, this.zCoord));
 			}
 		}
 	}

@@ -51,7 +51,7 @@ public class RenderSpike extends TileEntitySpecialRenderer {
             GL11.glPushMatrix();
 
          // Scale, Translate, Rotate
-            renderSpikeByOrientation(x, y, z, ForgeDirection.NORTH);
+            renderSpikeByOrientation(x, y, z, tileEntityGlassBell.getOrientation());
             
             // Bind texture
             this.bindTexture(texture);
@@ -77,45 +77,49 @@ public class RenderSpike extends TileEntitySpecialRenderer {
         {
             case DOWN:
             {
-                GL11.glScalef(0.5F, 0.5F, 0.5F);
-                GL11.glTranslatef((float) x + 0.0F, (float) y + 2.0F, (float) z + 0.0F);
-                GL11.glRotatef(90F, 1F, 0F, 0F);
+            	GL11.glTranslatef((float) x + 0.0625F, (float) y + 1.0F, (float) z + 0.9375F);
+                GL11.glScalef(0.4375F, 0.4375F, 0.4375F);
+//                GL11.glScalef(0.5F, 0.5F, 0.5F);
+//                GL11.glTranslatef((float) x + 0.0F, (float) y + 2.0F, (float) z + 0.0F);
+                GL11.glRotatef(-180F, 1F, 0F, 0F);
                 return;
             }
             case UP:
             {
-            	GL11.glScalef(0.0625F, 0.0625F, 0.0625F);
-                GL11.glTranslatef((float) x + 0.0F, (float) y + -1.0F, (float) z + 1.0F);
-                GL11.glRotatef(-90F, 1F, 0F, 0F);
+            	GL11.glTranslatef((float) x + 0.9375F, (float) y + 0.0F, (float) z + 0.9375F);
+                GL11.glScalef(0.4375F, 0.4375F, 0.4375F);
+                GL11.glRotatef(180F, 0F, 1F, 0F);
+//            	GL11.glScalef(0.0625F, 0.0625F, 0.0625F);
+//                GL11.glTranslatef((float) x + 0.0F, (float) y + -1.0F, (float) z + 1.0F);
+//                GL11.glRotatef(-90F, 1F, 0F, 0F);
                 return;
             }
             case NORTH:
             {
-                GL11.glTranslatef((float) x + 0.9375F, (float) y + 0.0F, (float) z + 0.9375F);
+            	GL11.glTranslatef((float) x + 0.0625F, (float) y + 0.0625F, (float) z + 1.0F);
                 GL11.glScalef(0.4375F, 0.4375F, 0.4375F);
-                GL11.glRotatef(180F, 0F, 1F, 0F);
+                GL11.glRotatef(-90F, 1F, 0F, 0F);
                 return;
             }
             case SOUTH:
             {
-                GL11.glScalef(0.5F, 0.5F, 0.5F);
-                GL11.glTranslatef((float) x + 0.0F, (float) y + 0.0F, (float) z + -1.0F);
+            	GL11.glTranslatef((float) x + 0.0625F, (float) y + 0.9375F, (float) z + 0.0F);
+                GL11.glScalef(0.4375F, 0.4375F, 0.4375F);
+                GL11.glRotatef(90F, 1F, 0F, 0F);
                 return;
             }
             case EAST:
             {
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glTranslatef((float) x + -1.0F, (float) y + 1.0F, (float) z + 1.0F);
+            	GL11.glTranslatef((float) x + 0.0F, (float) y + 0.9375F, (float) z + 0.0625F);
+                GL11.glScalef(0.4375F, 0.4375F, 0.4375F);
                 GL11.glRotatef(-90F, 0F, 0F, 1F);
-                GL11.glRotatef(-90F, 1F, 0F, 0F);
                 return;
             }
             case WEST:
             {
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
-                GL11.glTranslatef((float) x + 2.0F, (float) y + 0.0F, (float) z + 1.0F);
+            	GL11.glTranslatef((float) x + 1.0F, (float) y + 0.0625F, (float) z + 0.0625F);
+                GL11.glScalef(0.4375F, 0.4375F, 0.4375F);
                 GL11.glRotatef(90F, 0F, 0F, 1F);
-                GL11.glRotatef(-90F, 1F, 0F, 0F);
                 return;
             }
             case UNKNOWN:
