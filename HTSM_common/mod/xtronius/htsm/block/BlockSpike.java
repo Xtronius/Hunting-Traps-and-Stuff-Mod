@@ -3,6 +3,7 @@ package mod.xtronius.htsm.block;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.damageSource.HTSMDamageSource;
 import mod.xtronius.htsm.lib.RenderTypes;
 import mod.xtronius.htsm.tileEntity.TileEntityPlaque;
 import mod.xtronius.htsm.tileEntity.TileEntitySpike;
@@ -11,6 +12,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -85,7 +88,11 @@ public class BlockSpike extends HTSMBlockContainer {
 	
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
-		entity.attackEntityFrom(DamageSource.generic, (float) (1.0f + Math.abs((2.0f * entity.fallDistance))));
+		if(!((entity instanceof EntityItem) || (entity instanceof EntityIronGolem))) {
+			float damage = (float) (1.0f + Math.abs((2.0f * entity.fallDistance)));
+			if(entity.fallDistance == 0 && entity.isSneaking()) damage = damage/2;
+			entity.attackEntityFrom(HTSMDamageSource.spike, damage);
+		}
 	}
 	
 	@Override

@@ -19,7 +19,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-public class TileEntityCage extends TileEntity implements IInventory{
+public class TileEntityCage extends TickingTileEntity implements IInventory{
 	
 	private ItemStack[] invContents = new ItemStack[3];
 
@@ -34,119 +34,110 @@ public class TileEntityCage extends TileEntity implements IInventory{
 	/**Client-Side Variable*/
 	public ItemStack displayStack;
 	
-	private int timer = 0;
-	private float seconds = 0.75f;
-	
 	private int detectionRange = 10;
 	private int captureRange = 3;
 	
 	public ModelCage model = new ModelCage();
 	
-	//TODO Add Schedule Block Update System
-
-	@Override
-	public void updateEntity() {
-		
-		//TODO Clean up code
-		
-		this.incrementTimer();
-		
+	protected void intervalUpdate() {
 		if(!this.worldObj.isRemote) {
-			if(timer == getDelay()) {
-				if(!this.isCageClosed) {
-					//Checks to see if the inv slots are filled
-					if(this.doesHaveItem() || this.isProcessing) {
-						if(this.targetEntity == null) {
-							//Gets the block at the tile entities' postion
-							Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
-							//Gets the bounding box of the block obtained above, then it offsets it and expands it
-							AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
-							AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
-							AxisAlignedBB aabb2 = aabb1.expand(detectionRange, detectionRange, detectionRange);
-							//The master list in-which all of the entities within range are put in a nested Array-List
-							ArrayList<ArrayList<EntityLiving>> list = new ArrayList<ArrayList<EntityLiving>>();
-							
-							//Gets all entities within this bounding box and adds them to the master list					
-							for(int i = 0; i < this.getSizeInventory(); i++) 
-								if(this.getStackInSlot(i) != null && HTSM.cageList.isValidItemStack(this.getStackInSlot(i))) {
-									ArrayList<Class> aquEntList = HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(i));
-									for(Class entity : aquEntList) list.add((ArrayList<EntityLiving>) this.worldObj.getEntitiesWithinAABB(entity, aabb2));
-									break;
+			if(!this.isCageClosed) {
+				//Checks to see if the inv slots are filled
+				if(this.doesHaveItem() || this.isProcessing) {
+					if(this.targetEntity == null) {
+						//Gets the block at the tile entities' postion
+						Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
+						//Gets the bounding box of the block obtained above, then it offsets it and expands it
+						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(block.getBlockBoundsMinX(), block.getBlockBoundsMinY(), block.getBlockBoundsMinZ(), block.getBlockBoundsMaxX(), block.getBlockBoundsMaxY(), block.getBlockBoundsMaxZ());
+						AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
+						AxisAlignedBB aabb2 = aabb1.expand(detectionRange, detectionRange, detectionRange);
+						//The master list in-which all of the entities within range are put in a nested Array-List
+						ArrayList<ArrayList<EntityLiving>> list = new ArrayList<ArrayList<EntityLiving>>();
+						
+						//Gets all entities within this bounding box and adds them to the master list					
+						for(int i = 0; i < this.getSizeInventory(); i++) 
+							if(this.getStackInSlot(i) != null && HTSM.cageList.isValidItemStack(this.getStackInSlot(i))) {
+								ArrayList<Class> aquEntList = HTSM.cageList.getEntityFromItemStack(this.getStackInSlot(i));
+								for(Class entity : aquEntList) list.add((ArrayList<EntityLiving>) this.worldObj.getEntitiesWithinAABB(entity, aabb2));
+								break;
+							}
+						
+						for(ArrayList<EntityLiving> array : list) 
+							for(EntityLiving entity : array) {
+								if(!this.removedEntities.contains(entity)) {
+									//Math for calculating the percentage chance
+									double basePercent = 0.75;
+									double item = 1.0;
+									double itemPercent = (item * basePercent) < 1.0 ? (item * basePercent) : 1.0;
+									double finalPercent = 1.0 - itemPercent;
+									
+									double rand = Math.random();
+	//								double rand = 1.0d;
+									
+									//If the randomly calculated value is greater than the 
+									if(rand >= finalPercent) {
+										System.out.println(rand + " Out of: " + finalPercent);
+										//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
+										entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+										this.targetEntity = entity;
+										
+										for(int i = 0; i < this.getSizeInventory(); i++) 
+											if(this.getStackInSlot(i) != null && this.getStackInSlot(i).stackSize > 0) {
+												this.getStackInSlot(i).stackSize--;
+												if(this.getStackInSlot(i).stackSize <= 0)
+													this.setInventorySlotContents(i, null);
+												this.isProcessing = true;
+												break;
+											} else this.setInventorySlotContents(i, null);
+										break;
+									} else this.removedEntities.add(entity);
 								}
-							
-							for(ArrayList<EntityLiving> array : list) 
-								for(EntityLiving entity : array) {
-									if(!this.removedEntities.contains(entity)) {
-										//Math for calculating the percentage chance
-										double basePercent = 0.75;
-										double item = 1.0;
-										double itemPercent = (item * basePercent) < 1.0 ? (item * basePercent) : 1.0;
-										double finalPercent = 1.0 - itemPercent;
-										
-										double rand = Math.random();
-//										double rand = 1.0d;
-										
-										//If the randomly calculated value is greater than the 
-										if(rand >= finalPercent) {
-											System.out.println(rand + " Out of: " + finalPercent);
-											//Try to send the entity to the tile entities location, closes the gate and set the entity as the target entity
-											entity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-											this.targetEntity = entity;
+							}
+					} else if(this.targetEntity != null) {
+						if(this.targetEntity != null) 
+							if(this.targetEntity.posX > this.xCoord - captureRange && this.targetEntity.posX < this.xCoord + captureRange) 
+								if(this.targetEntity.posY > this.yCoord - captureRange && this.targetEntity.posY < this.yCoord + captureRange) 
+									if(this.targetEntity.posZ > this.zCoord - captureRange && this.targetEntity.posZ < this.zCoord + captureRange) 
+										if(this.targetEntity != null) {
+											NBTTagCompound compound2 = new NBTTagCompound();
+									        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
+									        this.targetEntity.writeToNBT(compound2);
+									        this.setEntityData(compound2);
+											this.targetEntity.setDead();
+											this.isProcessing = false;
+											this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
+											this.setCageClosed(true);
 											
-											for(int i = 0; i < this.getSizeInventory(); i++) 
-												if(this.getStackInSlot(i) != null && this.getStackInSlot(i).stackSize > 0) {
-													this.getStackInSlot(i).stackSize--;
-													if(this.getStackInSlot(i).stackSize <= 0)
-														this.setInventorySlotContents(i, null);
-													this.isProcessing = true;
-													break;
-												} else this.setInventorySlotContents(i, null);
-											break;
-										} else this.removedEntities.add(entity);
-									}
-								}
-						} else if(this.targetEntity != null) {
-							if(this.targetEntity != null) 
-								if(this.targetEntity.posX > this.xCoord - captureRange && this.targetEntity.posX < this.xCoord + captureRange) 
-									if(this.targetEntity.posY > this.yCoord - captureRange && this.targetEntity.posY < this.yCoord + captureRange) 
-										if(this.targetEntity.posZ > this.zCoord - captureRange && this.targetEntity.posZ < this.zCoord + captureRange) 
-											if(this.targetEntity != null) {
-												NBTTagCompound compound2 = new NBTTagCompound();
-										        compound2.setString("id", EntityList.getEntityString(this.targetEntity));
-										        this.targetEntity.writeToNBT(compound2);
-										        this.setEntityData(compound2);
-												this.targetEntity.setDead();
-												this.isProcessing = false;
-												this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
-												this.setCageClosed(true);
-												
-												this.worldObj.notifyBlockOfNeighborChange(this.xCoord+1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-												this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord+1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-												this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord+1, HTSM.blockInit.getBlockByName("BlockCage"));
-												this.worldObj.notifyBlockOfNeighborChange(this.xCoord-1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-												this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord-1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-												this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord-1, HTSM.blockInit.getBlockByName("BlockCage"));
-											}
-										 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord+1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord+1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord+1, HTSM.blockInit.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord-1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord-1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord-1, HTSM.blockInit.getBlockByName("BlockCage"));
+										}
 									 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 								 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
-						}
+							 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 					}
-					//Updates the Client
-					if(this.getEntityData() != null && this.getEntityData().hasKey("id"))
-						updateClient(this.getEntityData().getString("id"));
-					else
-						updateClient("No-Entity");
 				}
-				
 				//Updates the Client
 				if(this.getEntityData() != null && this.getEntityData().hasKey("id"))
 					updateClient(this.getEntityData().getString("id"));
 				else
 					updateClient("No-Entity");
 			}
+			
+			//Updates the Client
+			if(this.getEntityData() != null && this.getEntityData().hasKey("id"))
+				updateClient(this.getEntityData().getString("id"));
+			else
+				updateClient("No-Entity");
 		}
 	}
+	
+	public boolean canUpdate() {
+        return true;
+    }
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
@@ -292,8 +283,4 @@ public class TileEntityCage extends TileEntity implements IInventory{
 
 	public NBTTagCompound getEntityData() { return entityData; }
 	public void setEntityData(NBTTagCompound entityData) { this.entityData = entityData; }
-	
-	private int getDelay() { return (int) (this.seconds * 20);}
-	
-	private void incrementTimer() { if(timer <= getDelay()) timer++;else timer = 0; }
 }

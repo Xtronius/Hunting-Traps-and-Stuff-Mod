@@ -20,23 +20,23 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-public class TileEntityPlaque extends TileEntity implements IInventory{
+public class TileEntityPlaque extends TickingTileEntity implements IInventory{
 	
 	private ItemStack[] invContents = new ItemStack[1];
-
-	private int timer = 0;
-	private float seconds = 5.0f;
 	
 	@Override
 	public void updateEntity() {
-		
-		this.incrementTimer();
-		
-		if(!this.worldObj.isRemote) {
-			if(timer == getDelay()) {
-				PacketHandler.INSTANCE.getPacketFrom(new PacketPlaqueData(this.getStackInSlot(0), this.xCoord, this.yCoord, this.zCoord));
-			}
-		}
+		super.updateEntity();
+	}
+	
+	@Override
+	public boolean canUpdate() {
+        return true;
+    }
+	
+	@Override
+	protected void intervalUpdate() {
+		PacketHandler.INSTANCE.getPacketFrom(new PacketPlaqueData(this.getStackInSlot(0), this.xCoord, this.yCoord, this.zCoord));
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public class TileEntityPlaque extends TileEntity implements IInventory{
             if (j >= 0 && j < this.invContents.length)  this.invContents[j] = ItemStack.loadItemStackFromNBT(compound1);
         }
     }
-
+	
 	@Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
@@ -71,11 +71,8 @@ public class TileEntityPlaque extends TileEntity implements IInventory{
         compound.setTag("Items", list);
     }
 	
-	private void updateClient() {}
-	
 	@Override
 	public int getSizeInventory() { return 1; }
-
 	@Override
 	public ItemStack getStackInSlot(int slot) { return this.invContents[slot]; }
 
@@ -105,31 +102,20 @@ public class TileEntityPlaque extends TileEntity implements IInventory{
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slot) { return this.invContents[slot]; }
-
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) { this.invContents[slot] = stack; }
-
 	@Override
 	public String getInventoryName() { return "Cage"; }
-
 	@Override
 	public boolean hasCustomInventoryName() { return false; }
-
 	@Override
 	public int getInventoryStackLimit() { return 64; }
-
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) { return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : player.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D; }
-
 	@Override
 	public void openInventory() {}
-
 	@Override
 	public void closeInventory() {}
-
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) { return true; }
-
-	private int getDelay() { return (int) (this.seconds * 20);}
-	private void incrementTimer() { if(timer <= getDelay()) timer++;else timer = 0; }
 }

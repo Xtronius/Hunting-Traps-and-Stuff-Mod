@@ -11,23 +11,10 @@ import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySpike extends TileEntity implements IInventory{
+public class TileEntitySpike extends TickingTileEntity implements IInventory{
 	
 	private ForgeDirection orientation = ForgeDirection.UP;
 	private ItemStack[] invContents = new ItemStack[1];
-
-	private int timer = 0;
-	private float seconds = 5.0f;
-	
-	@Override
-	public void updateEntity() {
-		
-		this.incrementTimer();
-		
-		if(!this.worldObj.isRemote) {
-			if(timer == getDelay()) {}
-		}
-	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
@@ -69,6 +56,8 @@ public class TileEntitySpike extends TileEntity implements IInventory{
         NBTTagCompound nbtBlockData = new NBTTagCompound();
         
         nbtBlockData.setByte("BlockOrientation", (byte) orientation.ordinal());
+        
+        compound.setTag("BlockData", nbtBlockData);
     }
 	
 	 @Override
@@ -133,9 +122,6 @@ public class TileEntitySpike extends TileEntity implements IInventory{
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) { return true; }
-
-	private int getDelay() { return (int) (this.seconds * 20);}
-	private void incrementTimer() { if(timer <= getDelay()) timer++;else timer = 0; }
 	
 	public ForgeDirection getOrientation() { return orientation; }
     public void setOrientation(ForgeDirection orientation) { this.orientation = orientation; }
