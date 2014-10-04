@@ -1,0 +1,8 @@
+# Items
+item.ItemCage.name=Cage Trap
+item.ItemUniversalMultiTool=Universal Multi Tool
+
+# Blocks
+tile.BlockCage.name=Cage Trap
+tile.BlockPlaque.name=Plaque
+tile.BlockSpike.name=Spike Trap

@@ -120,6 +120,8 @@ public class TileEntityCage extends TickingTileEntity implements IInventory{
 							 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 					}
 				}
+				//Updates neighboring blocks for redstone update
+				this.updateNeighbors();
 				//Updates the Client
 				if(this.getEntityData() != null && this.getEntityData().hasKey("id"))
 					updateClient(this.getEntityData().getString("id"));
@@ -187,6 +189,15 @@ public class TileEntityCage extends TickingTileEntity implements IInventory{
         }
     }
 	
+	public void updateNeighbors() {
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord+1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord+1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord+1, HTSM.blockInit.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord-1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord-1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord-1, HTSM.blockInit.getBlockByName("BlockCage"));
+	}
+	
 	public boolean releaseEntity() {
 		if(this.getEntityData() != null) {
 			EntityLiving entityLiving = (EntityLiving) EntityList.createEntityByName(this.getEntityData().getString("id"), this.worldObj);
@@ -197,13 +208,6 @@ public class TileEntityCage extends TickingTileEntity implements IInventory{
 			this.updateClient("No-Entity");
 			this.removedEntities.add(entityLiving);
 			this.resetVars();
-			
-			this.worldObj.notifyBlockOfNeighborChange(this.xCoord+1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-			this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord+1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-			this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord+1, HTSM.blockInit.getBlockByName("BlockCage"));
-			this.worldObj.notifyBlockOfNeighborChange(this.xCoord-1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-			this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord-1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-			this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord-1, HTSM.blockInit.getBlockByName("BlockCage"));
 			return true;
 		}
 //		this.resetVars();

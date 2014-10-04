@@ -5,7 +5,7 @@ public class Reference {
     /**
      *	The mod id
      */
-    public static final String MOD_ID = "HTSM";
+    public static final String MOD_ID = "htsm";
     
     /**
      *	The mod name
@@ -37,5 +37,5 @@ public class Reference {
     /**
      * 	The String for gui textures
      */
-    public static final String MOD_ASSET = "hts_mod";
+    public static final String MOD_ASSET = "htsm";
 }
