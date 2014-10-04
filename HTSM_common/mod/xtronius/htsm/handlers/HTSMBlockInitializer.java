@@ -3,10 +3,14 @@ package mod.xtronius.htsm.handlers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mod.xtronius.htsm.block.*;
+import mod.xtronius.htsm.block.BlockCage;
+import mod.xtronius.htsm.block.BlockIDs;
+import mod.xtronius.htsm.block.BlockPlaque;
+import mod.xtronius.htsm.block.BlockSpike;
+import mod.xtronius.htsm.lib.Reference;
 import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class HTSMBlockInitializer {
 	
@@ -35,4 +39,6 @@ public class HTSMBlockInitializer {
 	
 	public static void addToBlockReg(String name) { /*Block.blockRegistry.addObject(BlockIDs.getBlockID(name), name, blocks.get(name)); */}
 	public static Block getBlockByName(String name) { return blocks.get(name); }
+	public static Item getBlockAsItemByName(String name) { return GameRegistry.findItem(Reference.MOD_ID, name); }
+	public static Item getBlockAsItemByBlock(Block block) { return GameRegistry.findItem(Reference.MOD_ID, block.getUnlocalizedName().substring(block.getUnlocalizedName().indexOf(".") + 1)); }
 }

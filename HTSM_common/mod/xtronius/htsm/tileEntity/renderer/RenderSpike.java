@@ -21,52 +21,24 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderSpike extends TileEntitySpecialRenderer {
-    private final ModelSpike modelSpike = new ModelSpike();
-    private final RenderItem customRenderItem;
-    
-    public static ResourceLocation texture = new ResourceLocation(Reference.MOD_ASSET, "textures/modelTextureMaps/ModelBlockSpike_Texture_Map_2.png");
+    private final ModelSpike modelSpike;
+    private ResourceLocation texture = new ResourceLocation(Reference.MOD_ASSET, "textures/modelTextureMaps/ModelBlockSpike_Texture_Map_2.png");
 
     public RenderSpike() {
-        customRenderItem = new RenderItem() {
-            @Override
-            public boolean shouldBob()
-            {
-                return false;
-            }
-        };
-
-        customRenderItem.setRenderManager(RenderManager.instance);
+    	 modelSpike = new ModelSpike();
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float tick) {
         if (tileEntity instanceof TileEntitySpike) {
-        	TileEntitySpike tileEntityGlassBell = (TileEntitySpike) tileEntity;
+        	TileEntitySpike tileEntitySpike = (TileEntitySpike) tileEntity;
 
             GL11.glDisable(GL11.GL_CULL_FACE);
-
-            /**
-             * Render the Glass Bell
-             */
             GL11.glPushMatrix();
-
-         // Scale, Translate, Rotate
-            renderSpikeByOrientation(x, y, z, tileEntityGlassBell.getOrientation());
-            
-            // Bind texture
+            renderSpikeByOrientation(x, y, z, tileEntitySpike.getOrientation());
             this.bindTexture(texture);
-
             modelSpike.render();
-
             GL11.glPopMatrix();
-
-            /**
-             * Render the ghost item inside of the Glass Bell, slowly spinning
-             */
-            GL11.glPushMatrix();
-
-            GL11.glPopMatrix();
-
             GL11.glEnable(GL11.GL_CULL_FACE);
         }
     }
@@ -79,8 +51,6 @@ public class RenderSpike extends TileEntitySpecialRenderer {
             {
             	GL11.glTranslatef((float) x + 0.0625F, (float) y + 1.0F, (float) z + 0.9375F);
                 GL11.glScalef(0.4375F, 0.4375F, 0.4375F);
-//                GL11.glScalef(0.5F, 0.5F, 0.5F);
-//                GL11.glTranslatef((float) x + 0.0F, (float) y + 2.0F, (float) z + 0.0F);
                 GL11.glRotatef(-180F, 1F, 0F, 0F);
                 return;
             }
@@ -89,9 +59,6 @@ public class RenderSpike extends TileEntitySpecialRenderer {
             	GL11.glTranslatef((float) x + 0.9375F, (float) y + 0.0F, (float) z + 0.9375F);
                 GL11.glScalef(0.4375F, 0.4375F, 0.4375F);
                 GL11.glRotatef(180F, 0F, 1F, 0F);
-//            	GL11.glScalef(0.0625F, 0.0625F, 0.0625F);
-//                GL11.glTranslatef((float) x + 0.0F, (float) y + -1.0F, (float) z + 1.0F);
-//                GL11.glRotatef(-90F, 1F, 0F, 0F);
                 return;
             }
             case NORTH:

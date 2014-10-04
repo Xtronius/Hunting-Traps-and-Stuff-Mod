@@ -2,6 +2,7 @@ package mod.xtronius.htsm.proxy;
 
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.item.renderer.RenderItemCage;
+import mod.xtronius.htsm.item.renderer.RenderItemSpike;
 import mod.xtronius.htsm.lib.RenderTypes;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.tileEntity.TileEntityPlaque;
@@ -21,6 +22,7 @@ public class ClientProxy extends CommonProxy {
 		 ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCage.class, new RenderCage());
 		 ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPlaque.class, new RenderPlaque());
 		 MinecraftForgeClient.registerItemRenderer(HTSM.itemInit.getItemByName("ItemCage"), new RenderItemCage());
+		 MinecraftForgeClient.registerItemRenderer(HTSM.blockInit.getBlockAsItemByName("BlockSpike"), new RenderItemSpike());
 		 
 		 RenderTypes.BLOCK_SPIKE = RenderingRegistry.getNextAvailableRenderId();
 		 

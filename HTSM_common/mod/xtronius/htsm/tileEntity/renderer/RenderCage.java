@@ -33,8 +33,8 @@ public class RenderCage extends TileEntitySpecialRenderer{
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
 		
-		GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5f, (float)z + 0.5F);
 		GL11.glRotatef(180F, 0F, 0F, 1F);
 
@@ -82,8 +82,8 @@ public class RenderCage extends TileEntitySpecialRenderer{
 			}
 		}
 		
-		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_LIGHTING);
 	}
 	
 	private void closeCageGate(ModelRenderer part) {

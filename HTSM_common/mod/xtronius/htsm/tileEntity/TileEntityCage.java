@@ -218,7 +218,7 @@ public class TileEntityCage extends TickingTileEntity implements IInventory{
 		ItemStack stack = null;
 		
 		for(int i = 0; i < this.getSizeInventory(); i++) if(this.getStackInSlot(i) != null) { stack = this.getStackInSlot(i); break;}
-		PacketHandler.INSTANCE.getPacketFrom(new PacketCageData(id, this.entityData, stack, this.isCageClosed(), this.xCoord, this.yCoord, this.zCoord)); 
+		HTSM.ch.INSTANCE.sendToAll(new PacketCageData(id, this.entityData, stack, this.isCageClosed(), this.xCoord, this.yCoord, this.zCoord)); 
 	}
 	
 	@Override

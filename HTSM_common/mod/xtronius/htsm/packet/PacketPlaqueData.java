@@ -1,6 +1,7 @@
  package mod.xtronius.htsm.packet;
 
 import io.netty.buffer.ByteBuf;
+import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.tileEntity.TileEntityPlaque;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -52,6 +53,7 @@ public class PacketPlaqueData implements IMessage{
         	if(tileEntity != null) {
         		tileEntity.setInventorySlotContents(0, message.stack);
         	}
+        	
             return null;
         }
     }

@@ -1,7 +1,7 @@
 package mod.xtronius.htsm.tileEntity;
 
 import java.util.ArrayList;
-
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.packet.PacketCageData;
@@ -17,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -36,7 +37,7 @@ public class TileEntityPlaque extends TickingTileEntity implements IInventory{
 	
 	@Override
 	protected void intervalUpdate() {
-		PacketHandler.INSTANCE.getPacketFrom(new PacketPlaqueData(this.getStackInSlot(0), this.xCoord, this.yCoord, this.zCoord));
+		HTSM.ch.INSTANCE.sendToAll(new PacketPlaqueData(this.getStackInSlot(0), this.xCoord, this.yCoord, this.zCoord));
 	}
 	
 	@Override

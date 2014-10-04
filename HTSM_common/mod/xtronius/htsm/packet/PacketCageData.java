@@ -1,6 +1,7 @@
  package mod.xtronius.htsm.packet;
 
 import io.netty.buffer.ByteBuf;
+import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
