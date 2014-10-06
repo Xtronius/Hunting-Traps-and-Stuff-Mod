@@ -23,6 +23,7 @@ public class HTSMItemInitializer {
 	private void init() {
 		addItem(new ItemUniversalMultiTool(), "ItemUniversalMultiTool");
 		addItem(new ItemCage(), "ItemCage");
+		addItem(new ItemUpgrade(), "ItemUpgrade");
 	}
 	
 	private void addItem(Item item, String name) {
@@ -33,6 +34,6 @@ public class HTSMItemInitializer {
 		items.put(name, item); 
 	}
 	
-	public static void addToItemReg(String name) { Item.itemRegistry.addObject(ItemIDs.getItemID(name), name, items.get(name)); }
+//	public static void addToItemReg(String name) { Item.itemRegistry.addObject(ItemIDs.getItemID(name), name, items.get(name)); }
 	public static Item getItemByName(String name) { return items.get(name); }
 }

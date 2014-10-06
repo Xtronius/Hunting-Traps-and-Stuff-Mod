@@ -1,14 +1,23 @@
 package mod.xtronius.htsm.tileEntity;
 
+import java.util.ArrayList;
+
+import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.packet.PacketSpikeData;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySpike extends TickingTileEntity implements IInventory{
@@ -16,15 +25,134 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 	private ForgeDirection orientation = ForgeDirection.UP;
 	private ItemStack[] invContents = new ItemStack[1];
 	
+	protected void intervalUpdate() {
+		
+		if(!this.worldObj.isRemote) {
+			
+			HTSM.ch.INSTANCE.sendToAll(new PacketSpikeData((byte) this.getOrientation().ordinal(), this.xCoord, this.yCoord, this.zCoord));
+			
+			for(int upgradeSlot = 0; upgradeSlot < invContents.length; upgradeSlot++) {
+				if(invContents[upgradeSlot] != null) {
+					switch(invContents[upgradeSlot].getItemDamage()) {
+						case 1: updateHopper();
+					}
+				}
+			}
+		}
+	}
+	
+	private void updateHopper() {
+		IInventory inventory = null;
+		
+		ArrayList<TileEntity> tileEntityList = new ArrayList<TileEntity>();
+		tileEntityList.add(0, this.worldObj.getTileEntity(this.xCoord, this.yCoord+1, this.zCoord));
+		tileEntityList.add(1, this.worldObj.getTileEntity(this.xCoord, this.yCoord-1, this.zCoord));
+		tileEntityList.add(2, this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord-1));
+		tileEntityList.add(3, this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord+1));
+		tileEntityList.add(4, this.worldObj.getTileEntity(this.xCoord+1, this.yCoord, this.zCoord));
+		tileEntityList.add(5, this.worldObj.getTileEntity(this.xCoord-1, this.yCoord, this.zCoord));
+		
+		ForgeDirection UP = ForgeDirection.UP;
+		ForgeDirection DOWN = ForgeDirection.DOWN;
+		ForgeDirection NORTH = ForgeDirection.NORTH;
+		ForgeDirection SOUTH = ForgeDirection.SOUTH;
+		ForgeDirection EAST = ForgeDirection.EAST;
+		ForgeDirection WEST = ForgeDirection.WEST;
+		
+		if(this.getOrientation() == UP)
+			tileEntityList.remove(tileEntityList.get(1));
+		else if(this.getOrientation() == DOWN)
+			tileEntityList.remove(tileEntityList.get(0));
+		else if(this.getOrientation() == NORTH)
+			tileEntityList.remove(tileEntityList.get(2));
+		else if(this.getOrientation() == SOUTH)
+			tileEntityList.remove(tileEntityList.get(3));
+		else if(this.getOrientation() == EAST)
+			tileEntityList.remove(tileEntityList.get(4));
+		else if(this.getOrientation() == WEST)
+			tileEntityList.remove(tileEntityList.get(5));
+		
+		for(TileEntity tileEntity : tileEntityList) {
+			if((tileEntity != null) && (tileEntity instanceof IInventory || tileEntity instanceof ISidedInventory )) {
+				inventory = (IInventory) tileEntity;
+			}
+		}
+		
+		if(inventory != null) {
+			Block block = this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord);
+			//Gets the bounding box of the block obtained above, then it offsets it and expands it
+			AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+			AxisAlignedBB aabb1 = aabb.getOffsetBoundingBox(this.xCoord, this.yCoord, this.zCoord);
+			AxisAlignedBB aabb2 = null;
+			
+			if(this.getOrientation() == UP)
+				aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
+			else if(this.getOrientation() == DOWN)
+				aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
+			else if(this.getOrientation() == NORTH)
+				aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
+			else if(this.getOrientation() == SOUTH)
+				aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
+			else if(this.getOrientation() == EAST)
+				aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
+			else if(this.getOrientation() == WEST)
+				aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
+			else aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
+			
+			HTSM.debug.println(aabb2);
+			
+			ArrayList<EntityItem> entityList = (ArrayList<EntityItem>) this.worldObj.getEntitiesWithinAABB(EntityItem.class, aabb2);
+			for(EntityItem entity : entityList) {
+				if(entity != null) {
+					ItemStack stack = entity.getEntityItem().copy();
+					
+					for(int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+						if(inventory.getStackInSlot(slot) == null) {
+							inventory.setInventorySlotContents(slot, stack);
+							stack = null;
+							entity.setDead();
+							break;
+						} else if(inventory.getStackInSlot(slot).stackSize < inventory.getStackInSlot(slot).getMaxStackSize()){
+							ItemStack stack2 = inventory.getStackInSlot(slot).copy();
+							if(stack.getItem().equals(stack2.getItem())) {
+								if(stack.stackSize + stack2.stackSize > stack.getMaxStackSize()) {
+									int diff = (stack.stackSize + stack2.stackSize)%stack.getMaxStackSize();
+									
+									ItemStack stack3 = stack.copy();
+									ItemStack stack4 = stack.copy();
+									stack3.stackSize = stack.getMaxStackSize();
+									stack4.stackSize  = diff;
+									
+									inventory.setInventorySlotContents(slot, stack3);
+									entity.setEntityItemStack(stack4);
+									
+									break;
+								} else {
+									ItemStack stack3 = stack.copy();
+									stack3.stackSize = stack.stackSize + stack2.stackSize;
+									
+									inventory.setInventorySlotContents(slot, stack3);
+									stack = null;
+									entity.setDead();
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);   
         
-        NBTTagList list = compound.getTagList("Items", 10);
+        NBTTagList invList = compound.getTagList("Items", 10);
         this.invContents = new ItemStack[this.getSizeInventory()];
 
-        for (int i = 0; i < list.tagCount(); ++i) {
-            NBTTagCompound compound1 = list.getCompoundTagAt(i);
+        for (int i = 0; i < invList.tagCount(); ++i) {
+            NBTTagCompound compound1 = invList.getCompoundTagAt(i);
             int j = compound1.getByte("Slot") & 255;
 
             if (j >= 0 && j < this.invContents.length)  this.invContents[j] = ItemStack.loadItemStackFromNBT(compound1);
@@ -40,18 +168,18 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 	@Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-        NBTTagList list = new NBTTagList();
+        NBTTagList invList = new NBTTagList();
         
         for (int i = 0; i < this.invContents.length; ++i) {
             if (this.invContents[i] != null) {
                 NBTTagCompound compound1 = new NBTTagCompound();
                 compound1.setByte("Slot", (byte)i);
                 this.invContents[i].writeToNBT(compound1);
-                list.appendTag(compound1);
+                invList.appendTag(compound1);
             }
         }
         
-        compound.setTag("Items", list);
+        compound.setTag("Items", invList);
         
         NBTTagCompound nbtBlockData = new NBTTagCompound();
         
@@ -65,9 +193,8 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 		 return PacketHandler.INSTANCE.getPacketFrom(new PacketSpikeData((byte) this.getOrientation().ordinal(), this.xCoord, this.yCoord, this.zCoord));
     }
 	
-	
 	@Override
-	public int getSizeInventory() { return 1; }
+	public int getSizeInventory() { return this.invContents.length; }
 
 	@Override
 	public ItemStack getStackInSlot(int slot) { return this.invContents[slot]; }
@@ -122,6 +249,8 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) { return true; }
+	
+	public boolean canUpdate()  {return true; }
 	
 	public ForgeDirection getOrientation() { return orientation; }
     public void setOrientation(ForgeDirection orientation) { this.orientation = orientation; }

@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
+import mod.xtronius.htsm.util.ColorHelper;
 import mod.xtronius.htsm.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -149,7 +150,7 @@ public class ItemCage extends Item {
 		if(stack.getTagCompound() != null) {
 			NBTTagCompound nbt1 = (NBTTagCompound) stack.getTagCompound().getTag("EntityData");
 			NBTTagList nbt2 = (NBTTagList) stack.getTagCompound().getTagList("CageItems", 10);
-			if(nbt1 != null) list.add(Util.UCCTS + 'a' + "Entity Captured: " + Util.splitCamelCase(nbt1.getString("id")));
+			if(nbt1 != null) list.add(ColorHelper.GREEN + "Entity Captured: " + Util.splitCamelCase(nbt1.getString("id")));
 			else list.add(1, "No Entity Stored");
 			if(nbt2.tagCount() > 0) {
 		        for (int i = 0; i < nbt2.tagCount(); ++i) {
@@ -157,7 +158,7 @@ public class ItemCage extends Item {
 		            int j = compound1.getByte("Slot") & 255;
 		            
 		            if (j >= 0 && j < 3) 
-		                list.add(Util.UCCTS + 'a' + "Slot " + j + ": " + Util.getUnlocalizedNameInefficiently(Item.getItemById(compound1.getShort("id"))) +  ' ' + compound1.getByte("Count"));
+		                list.add(ColorHelper.GREEN + "Slot " + j + ": " + Util.getUnlocalizedNameInefficiently(Item.getItemById(compound1.getShort("id"))) +  ' ' + compound1.getByte("Count"));
 		        }
 			} else 
 				list.add("No Items Stores");

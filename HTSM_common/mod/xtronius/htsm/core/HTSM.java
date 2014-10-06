@@ -51,11 +51,6 @@ public class HTSM {
 		new HTSMItemInitializer();
 		HTSMIDHandler.RegConfigIDs(event);
 		
-		for(String name : blockInit.blockNames)
-			blockInit.addToBlockReg(name);
-		for(String name : itemInit.itemNames)
-			itemInit.addToItemReg(name);
-		
 		new HTSMEventInitializer();
     }   
     
@@ -63,7 +58,7 @@ public class HTSM {
 	public void init(FMLInitializationEvent event) {
 		
 		new HTSMBlockRegistry();
-		HTSMItemRegistry.ItemReg();
+		new HTSMItemRegistry();
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 	}
     	

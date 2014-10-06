@@ -19,6 +19,9 @@ public class CageList {
 		this.addItemEntityPair(Items.carrot, EntityPig.class);
 		this.addItemEntityPair(Items.fish, EntityOcelot.class);
 		this.addItemEntityPair(Items.bone, EntityWolf.class);
+		this.addItemEntityPair(Items.beef, EntityWolf.class);
+		this.addItemEntityPair(Items.porkchop, EntityWolf.class);
+		this.addItemEntityPair(Items.chicken, EntityWolf.class);
 		this.addItemEntityPair(Items.wheat_seeds, EntityChicken.class);
 		this.addItemEntityPair(Items.melon_seeds, EntityChicken.class);
 		this.addItemEntityPair(Items.pumpkin_seeds, EntityChicken.class);

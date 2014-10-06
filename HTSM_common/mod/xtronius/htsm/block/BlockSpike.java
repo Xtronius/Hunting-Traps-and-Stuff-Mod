@@ -7,6 +7,8 @@ import mod.xtronius.htsm.damageSource.HTSMDamageSource;
 import mod.xtronius.htsm.lib.RenderTypes;
 import mod.xtronius.htsm.tileEntity.TileEntityPlaque;
 import mod.xtronius.htsm.tileEntity.TileEntitySpike;
+import mod.xtronius.htsm.util.ColorHelper;
+import mod.xtronius.htsm.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -30,6 +33,31 @@ public class BlockSpike extends HTSMBlockContainer {
 		this.setCreativeTab(CreativeTabs.tabBlock);
 		this.setLightOpacity(0);
 		this.setBlockBounds(0.0625f, 0.0f, 0.0625f, 0.9375f, 0.375f, 0.9375f);
+	}
+	
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+		
+		if(!world.isRemote) {
+			ItemStack stack = player.getCurrentEquippedItem();
+			if((stack != null) && (stack.getItem() == HTSM.itemInit.getItemByName("ItemUpgrade")) && (stack.getItemDamage() != 0)) {
+				TileEntitySpike tileEntity = (TileEntitySpike) world.getTileEntity(x, y, z);
+				
+				if(tileEntity != null) {
+					for(int i = 0; i < tileEntity.getSizeInventory(); i++) {
+						if(tileEntity.getStackInSlot(i) == null) {
+							tileEntity.setInventorySlotContents(i, stack);
+							player.setCurrentItemOrArmor(0, null);
+							Util.sendPlayerMessage(player, ColorHelper.GREEN + "Upgrade Inserted");
+							break;
+						} else {
+							Util.sendPlayerMessage(player, ColorHelper.DARK_RED + "There are no more upgrade slots available.");
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override

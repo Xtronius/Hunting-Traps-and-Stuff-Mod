@@ -1,0 +1,16 @@
+[
+{
+  "modid": "HTSM",
+  "name": "Hunting Traps & Stuff Mod
+  "description": "A new experiance of hunting and other stuff in minecraft.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://minecraft.curseforge.com/mc-mods/224690-hunting-traps-stuff-mod",
+  "updateUrl": "",
+  "authorList": ["Mecblader_aka_Xtronius_"],
+  "credits": "Mecblader_aka_Xtronius_",
+  "logoFile": "assets/htsm/textures/logo/logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
