@@ -20,10 +20,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySpike extends TickingTileEntity implements IInventory{
+public class TileEntitySpike extends TickingTileEntity implements IInventory, ITileEntityHTSMUpgradable{
 	
 	private ForgeDirection orientation = ForgeDirection.UP;
 	private ItemStack[] invContents = new ItemStack[1];
+	private ItemStack[] upgradeInvContents = new ItemStack[1];
 	
 	protected void intervalUpdate() {
 		
@@ -31,9 +32,9 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 			
 			HTSM.ch.INSTANCE.sendToAll(new PacketSpikeData((byte) this.getOrientation().ordinal(), this.xCoord, this.yCoord, this.zCoord));
 			
-			for(int upgradeSlot = 0; upgradeSlot < invContents.length; upgradeSlot++) {
-				if(invContents[upgradeSlot] != null) {
-					switch(invContents[upgradeSlot].getItemDamage()) {
+			for(int upgradeSlot = 0; upgradeSlot < upgradeInvContents.length; upgradeSlot++) {
+				if(upgradeInvContents[upgradeSlot] != null) {
+					switch(upgradeInvContents[upgradeSlot].getItemDamage()) {
 						case 1: updateHopper();
 					}
 				}
@@ -99,8 +100,6 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 				aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
 			else aabb2 = AxisAlignedBB.getBoundingBox(aabb1.minX, aabb1.minY, aabb1.minZ, aabb1.maxX, aabb1.maxY, aabb1.maxZ);
 			
-			HTSM.debug.println(aabb2);
-			
 			ArrayList<EntityItem> entityList = (ArrayList<EntityItem>) this.worldObj.getEntitiesWithinAABB(EntityItem.class, aabb2);
 			for(EntityItem entity : entityList) {
 				if(entity != null) {
@@ -158,6 +157,16 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
             if (j >= 0 && j < this.invContents.length)  this.invContents[j] = ItemStack.loadItemStackFromNBT(compound1);
         }
         
+        NBTTagList upgradeInvList = compound.getTagList("UpgradeItems", 10);
+        this.invContents = new ItemStack[this.getSizeUpgradeInventory()];
+
+        for (int i = 0; i < upgradeInvList.tagCount(); ++i) {
+            NBTTagCompound compound1 = upgradeInvList.getCompoundTagAt(i);
+            int j = compound1.getByte("Slot") & 255;
+
+            if (j >= 0 && j < this.upgradeInvContents.length)  this.upgradeInvContents[j] = ItemStack.loadItemStackFromNBT(compound1);
+        }
+        
         NBTTagCompound nbtBlockData = (NBTTagCompound) compound.getTag("BlockData");
         
         if (nbtBlockData.hasKey("BlockOrientation")) {
@@ -181,6 +190,19 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
         
         compound.setTag("Items", invList);
         
+        NBTTagList upgradeInvList = new NBTTagList();
+        
+        for (int i = 0; i < this.upgradeInvContents.length; ++i) {
+            if (this.upgradeInvContents[i] != null) {
+                NBTTagCompound compound1 = new NBTTagCompound();
+                compound1.setByte("Slot", (byte)i);
+                this.upgradeInvContents[i].writeToNBT(compound1);
+                invList.appendTag(compound1);
+            }
+        }
+        
+        compound.setTag("UpgradeItems", invList);
+        
         NBTTagCompound nbtBlockData = new NBTTagCompound();
         
         nbtBlockData.setByte("BlockOrientation", (byte) orientation.ordinal());
@@ -198,6 +220,10 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 
 	@Override
 	public ItemStack getStackInSlot(int slot) { return this.invContents[slot]; }
+	
+	public int getSizeUpgradeInventory() { return this.upgradeInvContents.length; }
+
+	public ItemStack getStackInUpgradeSlot(int slot) { return this.upgradeInvContents[slot]; }
 
 	@Override
 	public ItemStack decrStackSize(int slotIndex, int i) {
@@ -228,6 +254,8 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) { this.invContents[slot] = stack; }
+	
+	public void setUpgradeInventorySlotContents(int slot, ItemStack stack) { this.upgradeInvContents[slot] = stack; }
 
 	@Override
 	public String getInventoryName() { return "Spike"; }
@@ -249,6 +277,12 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory{
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) { return true; }
+	
+	@Override
+	public int getUpgradeInventoryStackLimit() { return 64; }
+
+	@Override
+	public boolean isItemValidForUpgradeSlot(int slot, ItemStack stack) { return  (stack != null && stack.getItem().equals(HTSM.itemInit.getItemByName("ItemUpgrade")) && stack.getItemDamage() != 0); }
 	
 	public boolean canUpdate()  {return true; }
 	

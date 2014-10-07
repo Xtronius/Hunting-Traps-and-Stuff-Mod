@@ -36,27 +36,8 @@ public class BlockSpike extends HTSMBlockContainer {
 	}
 	
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-		
-		if(!world.isRemote) {
-			ItemStack stack = player.getCurrentEquippedItem();
-			if((stack != null) && (stack.getItem() == HTSM.itemInit.getItemByName("ItemUpgrade")) && (stack.getItemDamage() != 0)) {
-				TileEntitySpike tileEntity = (TileEntitySpike) world.getTileEntity(x, y, z);
-				
-				if(tileEntity != null) {
-					for(int i = 0; i < tileEntity.getSizeInventory(); i++) {
-						if(tileEntity.getStackInSlot(i) == null) {
-							tileEntity.setInventorySlotContents(i, stack);
-							player.setCurrentItemOrArmor(0, null);
-							Util.sendPlayerMessage(player, ColorHelper.GREEN + "Upgrade Inserted");
-							break;
-						} else {
-							Util.sendPlayerMessage(player, ColorHelper.DARK_RED + "There are no more upgrade slots available.");
-						}
-					}
-				}
-			}
-		}
-		
+		if(!world.isRemote) 
+			Util.tryAddUpgradeToBlock(world, player, x, y, z);
 		return false;
 	}
 	

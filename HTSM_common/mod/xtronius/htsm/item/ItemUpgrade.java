@@ -16,15 +16,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemUpgrade extends Item{
 	
-	private final int subItemCount = 3;
-	
 	public ItemUpgrade() {
        this.setMaxStackSize(1);
        this.setHasSubtypes(true);
        this.setCreativeTab(CreativeTabs.tabMaterials);
     }
 	
-	public static final String[] names = new String[] {"blank", "hopper", "other"};
+	public static final String[] names = new String[] {"Blank", "Hopper", "Redstone", "Fire", "Poison", "Wither", "Hunger", "Slowness", "Blindness", "Nausea", "Other"};
     
 	public String getUnlocalizedName(ItemStack par1ItemStack) {
 	    int i = par1ItemStack.getItemDamage();
@@ -40,14 +38,14 @@ public class ItemUpgrade extends Item{
 	
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(int par1, CreativeTabs creativeTab, List list) {
-	    for (int x = 0; x < subItemCount; x++) {
+	    for (int x = 0; x < names.length; x++) {
 	        list.add(new ItemStack(this, 1, x));
 	    }
 	}
 	      
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister reg) {
-       icons = new IIcon[subItemCount];
+       icons = new IIcon[names.length];
              
        for(int i = 0; i < icons.length; i++) {
     	   icons[i] = reg.registerIcon(Reference.MOD_ASSET + ":" + names[i] + "Upgrade");

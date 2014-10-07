@@ -58,7 +58,7 @@ public class BlockPlaque extends HTSMBlockContainer {
 	    			ItemStack plaqueStack = tileEntity.getStackInSlot(0);
 	    			ItemStack playerStack = player.getCurrentEquippedItem();
 	    			
-	    			if(plaqueStack == null) {
+	    			if(plaqueStack == null && playerStack != null) {
 	    				ItemStack stack = playerStack.copy();
 	    				if(playerStack.stackSize > 1) {
 	    					playerStack.stackSize--;
