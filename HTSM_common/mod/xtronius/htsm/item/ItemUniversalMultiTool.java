@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class ItemUniversalMultiTool extends Item {
 	
 	public ItemUniversalMultiTool() {
-		this.setCreativeTab(CreativeTabs.tabTools);
+		this.setCreativeTab(HTSM.tabItems);
 		this.setMaxStackSize(1);
 	}
 	

@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public class ItemCage extends Item {
 	
 	public ItemCage() {
-		this.setCreativeTab(CreativeTabs.tabTools);
+		this.setCreativeTab(HTSM.tabBlocks);
 		this.setMaxStackSize(1);
 	}
 	

@@ -37,7 +37,7 @@ public class BlockPlaque extends HTSMBlockContainer {
 		super(Material.rock);
 		this.setBlockTextureName("BlockCage");
 		this.setLightOpacity(0);
-		this.setCreativeTab(CreativeTabs.tabBlock);
+		this.setCreativeTab(HTSM.tabBlocks);
 		
 		this.setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 	}

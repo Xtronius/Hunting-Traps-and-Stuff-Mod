@@ -19,7 +19,6 @@ public class ItemUpgrade extends Item{
 	public ItemUpgrade() {
        this.setMaxStackSize(1);
        this.setHasSubtypes(true);
-       this.setCreativeTab(CreativeTabs.tabMaterials);
     }
 	
 	public static final String[] names = new String[] {"Blank", "Hopper", "Redstone", "Fire", "Poison", "Wither", "Hunger", "Slowness", "Blindness", "Nausea", "Other"};

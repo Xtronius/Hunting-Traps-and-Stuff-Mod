@@ -30,7 +30,7 @@ public class BlockSpike extends HTSMBlockContainer {
 	public BlockSpike() {
 		super(Material.iron);
 		this.setBlockTextureName("BlockSpike");
-		this.setCreativeTab(CreativeTabs.tabBlock);
+		this.setCreativeTab(HTSM.tabBlocks);
 		this.setLightOpacity(0);
 		this.setBlockBounds(0.0625f, 0.0f, 0.0625f, 0.9375f, 0.375f, 0.9375f);
 	}

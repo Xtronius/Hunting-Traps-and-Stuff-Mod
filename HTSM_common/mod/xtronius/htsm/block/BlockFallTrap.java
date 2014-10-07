@@ -1,5 +1,6 @@
 package mod.xtronius.htsm.block;
 
+import mod.xtronius.htsm.core.HTSM;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,7 +15,7 @@ public class BlockFallTrap extends Block {
 	public BlockFallTrap() {
 		super(Material.leaves);
 		this.setBlockName("BlockFallTrap");
-		this.setCreativeTab(CreativeTabs.tabBlock);
+		this.setCreativeTab(HTSM.tabBlocks);
 	}
 	
 	private void fall(World world, int x, int y, int z, Entity entity, ForgeDirection dir) {
