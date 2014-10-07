@@ -71,7 +71,7 @@ public class BlockPlaque extends HTSMBlockContainer {
 	    				} else {
 	    					HTSM.debug.printerrln("The stack size should not be less than 1!");
 	    				}
-	    			} else {
+	    			} else if(plaqueStack != null){
 	    				if(playerStack == null) {
 	    					EntityItem item = new EntityItem(world, x, y, z, plaqueStack);
 	    					tileEntity.setInventorySlotContents(0, null);

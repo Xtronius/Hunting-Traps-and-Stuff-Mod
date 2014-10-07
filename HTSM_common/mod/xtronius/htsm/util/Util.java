@@ -40,24 +40,4 @@ public class Util {
 	public static void sendPlayerMessage(EntityPlayer player, String message) {
 		player.addChatMessage(new ChatComponentTranslation(message));
 	}
-	
-	public static void tryAddUpgradeToBlock(World world, EntityPlayer player, int x, int y, int z) {
-		
-		ITileEntityHTSMUpgradable tileEntity = (ITileEntityHTSMUpgradable) world.getTileEntity(x, y, z);
-		
-		if(tileEntity != null) {
-			ItemStack stack = player.getCurrentEquippedItem();
-			for(int i = 0; i < tileEntity.getSizeUpgradeInventory(); i++) {
-				if(tileEntity.isItemValidForUpgradeSlot(i, stack)) {
-					if(tileEntity.getStackInUpgradeSlot(i) == null) {
-						tileEntity.setUpgradeInventorySlotContents(i, stack);
-						player.setCurrentItemOrArmor(0, null);
-						Util.sendPlayerMessage(player, ColorHelper.GREEN + "Upgrade Inserted: " + ItemUpgrade.names[stack.getItemDamage()]);
-						return;
-					}	
-				} else return;
-			}
-		} else return;
-		Util.sendPlayerMessage(player, ColorHelper.DARK_RED + "There are no more upgrade slots available.");
-	}
 }

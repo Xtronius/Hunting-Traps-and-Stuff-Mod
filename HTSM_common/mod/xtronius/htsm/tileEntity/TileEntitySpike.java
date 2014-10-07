@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.packet.PacketSpikeData;
+import mod.xtronius.htsm.util.UpgradeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -35,7 +36,7 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory, IT
 			for(int upgradeSlot = 0; upgradeSlot < upgradeInvContents.length; upgradeSlot++) {
 				if(upgradeInvContents[upgradeSlot] != null) {
 					switch(upgradeInvContents[upgradeSlot].getItemDamage()) {
-						case 1: updateHopper();
+						case UpgradeHelper.UPGRADE_HOPPER: updateHopper();
 					}
 				}
 			}
@@ -289,4 +290,12 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory, IT
 	public ForgeDirection getOrientation() { return orientation; }
     public void setOrientation(ForgeDirection orientation) { this.orientation = orientation; }
     public void setOrientation(int orientation) { this.orientation = ForgeDirection.getOrientation(orientation); }
+
+	@Override
+	public boolean alreadyContainesUpgrade(ItemStack stack) {
+		for(int i = 0; i < this.upgradeInvContents.length; i++) {
+			if((this.getStackInSlot(i) != null) && (this.getStackInSlot(i).equals(stack))) return true;
+		}
+		return false;
+	}
 }
