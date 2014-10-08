@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.item.ItemUniversalMultiTool;
-import mod.xtronius.htsm.util.Util;
+import mod.xtronius.htsm.util.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -59,7 +59,7 @@ public class PacketKeyMData implements IMessage{
        					stack.setItemDamage(0);
        			}
        			
-       			Util.sendPlayerMessage(targetedPlayer, "Current Mode: " + ItemUniversalMultiTool.modes[stack.getItemDamage()]);
+       			PlayerHelper.sendPlayerMessage(targetedPlayer, "Current Mode: " + ItemUniversalMultiTool.modes[stack.getItemDamage()]);
        		}
        	}
        	

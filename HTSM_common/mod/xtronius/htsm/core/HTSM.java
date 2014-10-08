@@ -1,20 +1,11 @@
 package mod.xtronius.htsm.core;
 
-import mod.xtronius.htsm.CreativeTab.CreativeTabHTSMBlocks;
-import mod.xtronius.htsm.CreativeTab.CreativeTabHTSMItems;
-import mod.xtronius.htsm.handlers.GuiHandler;
-import mod.xtronius.htsm.handlers.HTSMBlockInitializer;
-import mod.xtronius.htsm.handlers.HTSMBlockRegistry;
-import mod.xtronius.htsm.handlers.HTSMEventInitializer;
-import mod.xtronius.htsm.handlers.HTSMIDHandler;
-import mod.xtronius.htsm.handlers.HTSMItemInitializer;
-import mod.xtronius.htsm.handlers.HTSMItemRegistry;
-import mod.xtronius.htsm.handlers.PacketHandler;
+import mod.xtronius.htsm.CreativeTab.*;
+import mod.xtronius.htsm.handlers.*;
 import mod.xtronius.htsm.lib.Reference;
 import mod.xtronius.htsm.proxy.IProxy;
 import mod.xtronius.htsm.util.Debug;
 import mod.xtronius.htsm.util.list.CageList;
-import mod.xtronius.htsm.util.list.ModelCageList;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
@@ -23,10 +14,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
 
@@ -53,7 +41,6 @@ public class HTSM {
 	public static HTSM instance;
 	
 	public static CageList cageList;
-	public static ModelCageList modelCageList;
 	
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event) {

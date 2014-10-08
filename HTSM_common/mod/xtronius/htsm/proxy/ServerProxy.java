@@ -1,12 +1,5 @@
 package mod.xtronius.htsm.proxy;
 
-import cpw.mods.fml.relauncher.Side;
-import mod.xtronius.htsm.core.HTSM;
-import mod.xtronius.htsm.packet.PacketCageData;
-import mod.xtronius.htsm.packet.PacketToggleCageGate;
-import mod.xtronius.htsm.util.list.CageList;
-import mod.xtronius.htsm.util.list.ModelCageList;
-
 public class ServerProxy extends CommonProxy{
 
 	@Override

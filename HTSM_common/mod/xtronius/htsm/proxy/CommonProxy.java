@@ -4,13 +4,11 @@ import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.util.KeyBindings;
 import mod.xtronius.htsm.util.list.CageList;
-import mod.xtronius.htsm.util.list.ModelCageList;
 
 public abstract class CommonProxy implements IProxy{
 
 	public void initMiscInfo() {
 		HTSM.cageList = new CageList();
-		HTSM.modelCageList = new ModelCageList();
 	}
 
 	public void registerTileEntities() {}

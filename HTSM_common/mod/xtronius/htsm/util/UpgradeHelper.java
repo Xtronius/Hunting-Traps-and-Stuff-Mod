@@ -32,16 +32,16 @@ public class UpgradeHelper {
 						if(tileEntity.getStackInUpgradeSlot(i) == null) {
 							tileEntity.setUpgradeInventorySlotContents(i, stack);
 							player.setCurrentItemOrArmor(0, null);
-							Util.sendPlayerMessage(player, ColorHelper.GREEN + "Upgrade Inserted: " + ItemUpgrade.names[stack.getItemDamage()]);
+							PlayerHelper.sendPlayerMessage(player, ColorHelper.GREEN + "Upgrade Inserted: " + ItemUpgrade.names[stack.getItemDamage()]);
 							return;
 						}
 					} else {
-						Util.sendPlayerMessage(player, ColorHelper.DARK_RED + "Upgrade Already Installed.");
+						PlayerHelper.sendPlayerMessage(player, ColorHelper.DARK_RED + "Upgrade Already Installed.");
 						return;
 					}
 				} else return;
 			}
 		} else return;
-		Util.sendPlayerMessage(player, ColorHelper.DARK_RED + "There are no more upgrade slots available.");
+		PlayerHelper.sendPlayerMessage(player, ColorHelper.DARK_RED + "There are no more upgrade slots available.");
 	}
 }

@@ -3,7 +3,7 @@ package mod.xtronius.htsm.util.list;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mod.xtronius.htsm.util.ItemEntityPair;
+import mod.xtronius.htsm.util.storageObj.ItemEntityPair;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.init.Items;

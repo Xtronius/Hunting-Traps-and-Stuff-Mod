@@ -1,4 +1,4 @@
-package mod.xtronius.htsm.util;
+package mod.xtronius.htsm.util.storageObj;
 
 import net.minecraft.item.Item;
 

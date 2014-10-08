@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.util.ColorHelper;
+import mod.xtronius.htsm.util.StringHelper;
 import mod.xtronius.htsm.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -150,7 +151,7 @@ public class ItemCage extends Item {
 		if(stack.getTagCompound() != null) {
 			NBTTagCompound nbt1 = (NBTTagCompound) stack.getTagCompound().getTag("EntityData");
 			NBTTagList nbt2 = (NBTTagList) stack.getTagCompound().getTagList("CageItems", 10);
-			if(nbt1 != null) list.add(ColorHelper.GREEN + "Entity Captured: " + Util.splitCamelCase(nbt1.getString("id")));
+			if(nbt1 != null) list.add(ColorHelper.GREEN + "Entity Captured: " + StringHelper.splitCamelCase(nbt1.getString("id")));
 			else list.add(1, "No Entity Stored");
 			if(nbt2.tagCount() > 0) {
 		        for (int i = 0; i < nbt2.tagCount(); ++i) {
