@@ -2,9 +2,11 @@ package mod.xtronius.htsm.item;
 
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.packet.PacketSpikeData;
+import mod.xtronius.htsm.tileEntity.ITileEntityRemovable;
+import mod.xtronius.htsm.tileEntity.ITileEntityRotatable;
+import mod.xtronius.htsm.tileEntity.ITileEntityUpgradable;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.tileEntity.TileEntitySpike;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -23,45 +25,61 @@ public class ItemUniversalMultiTool extends Item {
 		this.setMaxStackSize(1);
 	}
 	
+	public static String[] modes = {"Default", "Rotation", "Block Remover", "Upgrade Remover"};
 
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int meta, float hitX, float hitY, float hitZ) {
 		
 		if(!world.isRemote) {
+			
 			if(player.isSneaking()) {
+				
 				TileEntity tileEntity = world.getTileEntity(x, y, z);
-				if(tileEntity != null && tileEntity instanceof TileEntityCage) { 
-					handleTileEntityCage(itemStack, world, player, x, y, z, meta, hitX, hitY, hitZ);
+			
+				if(tileEntity != null) {
 					HTSM.proxy.playSound("ItemUniversalMultiTool", x, y, z, 1.0f, 1.0f);
-				} else if(tileEntity != null && tileEntity instanceof TileEntitySpike) {
-					handleRemoveSpikeUpgrade(itemStack, world, player, x, y, z, meta, hitX, hitY, hitZ);
-					HTSM.proxy.playSound("ItemUniversalMultiTool", x, y, z, 1.0f, 1.0f);
+					switch(itemStack.getItemDamage()) {
+						case 0: break;
+						case 1: {
+							if(tileEntity instanceof ITileEntityRotatable) {
+								handleRotateRotatable(itemStack, world, player, x, y, z, meta, hitX, hitY, hitZ);
+							}
+							break;
+						}
+						case 2: {
+							if(tileEntity instanceof TileEntityCage) { 
+								handleTileEntityCage(itemStack, world, player, x, y, z, meta, hitX, hitY, hitZ);
+							}
+							break;
+						}
+						case 3: {
+							 if(tileEntity instanceof ITileEntityUpgradable) {
+									handleRemoveUpgrade(itemStack, world, player, x, y, z, meta, hitX, hitY, hitZ);
+								}
+							}
+							break;
+					}
 				}
-			} else {
-				TileEntity tileEntity = world.getTileEntity(x, y, z);
-				if(tileEntity != null && tileEntity instanceof TileEntitySpike) {
-					handleRotateSpike(itemStack, world, player, x, y, z, meta, hitX, hitY, hitZ);
-					HTSM.proxy.playSound("ItemUniversalMultiTool", x, y, z, 1.0f, 1.0f);
-				}
+				
 			}
 		}
 		return false;
 	}
-	private void handleRemoveSpikeUpgrade(ItemStack itemStack, World world, EntityPlayer player, int x, int y, int z, int meta, float hitX, float hitY, float hitZ) {
-		TileEntitySpike tileEntitySpike = (TileEntitySpike) world.getTileEntity(x, y, z);
+	private void handleRemoveUpgrade(ItemStack itemStack, World world, EntityPlayer player, int x, int y, int z, int meta, float hitX, float hitY, float hitZ) {
+		ITileEntityUpgradable tileEntity = (ITileEntityUpgradable) world.getTileEntity(x, y, z);
 		
-		for(int i = 0; i < tileEntitySpike.getSizeInventory(); i++) {
-			ItemStack stack = tileEntitySpike.getStackInSlot(i);
+		for(int i = 0; i < tileEntity.getSizeUpgradeInventory(); i++) {
+			ItemStack stack = tileEntity.getStackInUpgradeSlot(i);
 			
 			if(stack != null) {
 				EntityItem entity = new EntityItem(world, x, y, z, stack);
-				tileEntitySpike.setInventorySlotContents(i, null);
+				tileEntity.setUpgradeInventorySlotContents(i, null);
 				world.spawnEntityInWorld(entity);
 			}
 		}
 	}
 	
-	private void handleRotateSpike(ItemStack itemStack, World world, EntityPlayer player, int x, int y, int z, int meta, float hitX, float hitY, float hitZ) {
-		TileEntitySpike tileEntitySpike = (TileEntitySpike) world.getTileEntity(x, y, z);
+	private void handleRotateRotatable(ItemStack itemStack, World world, EntityPlayer player, int x, int y, int z, int meta, float hitX, float hitY, float hitZ) {
+		ITileEntityRotatable tileEntity = (ITileEntityRotatable) world.getTileEntity(x, y, z);
 		
 		ForgeDirection UP = ForgeDirection.UP;
 		ForgeDirection DOWN = ForgeDirection.DOWN;
@@ -70,49 +88,27 @@ public class ItemUniversalMultiTool extends Item {
 		ForgeDirection EAST = ForgeDirection.EAST;
 		ForgeDirection WEST = ForgeDirection.WEST;
 		
-		if(tileEntitySpike.getOrientation() == UP)
-			tileEntitySpike.setOrientation(ForgeDirection.DOWN);
-		else if(tileEntitySpike.getOrientation() == DOWN)
-			tileEntitySpike.setOrientation(ForgeDirection.NORTH);
-		else if(tileEntitySpike.getOrientation() == NORTH)
-			tileEntitySpike.setOrientation(ForgeDirection.SOUTH);
-		else if(tileEntitySpike.getOrientation() == SOUTH)
-			tileEntitySpike.setOrientation(ForgeDirection.EAST);
-		else if(tileEntitySpike.getOrientation() == EAST)
-			tileEntitySpike.setOrientation(ForgeDirection.WEST);
-		else if(tileEntitySpike.getOrientation() == WEST)
-			tileEntitySpike.setOrientation(ForgeDirection.UP);
+		if(tileEntity.getOrientation() == UP)
+			tileEntity.setOrientation(ForgeDirection.DOWN);
+		else if(tileEntity.getOrientation() == DOWN)
+			tileEntity.setOrientation(ForgeDirection.NORTH);
+		else if(tileEntity.getOrientation() == NORTH)
+			tileEntity.setOrientation(ForgeDirection.SOUTH);
+		else if(tileEntity.getOrientation() == SOUTH)
+			tileEntity.setOrientation(ForgeDirection.EAST);
+		else if(tileEntity.getOrientation() == EAST)
+			tileEntity.setOrientation(ForgeDirection.WEST);
+		else if(tileEntity.getOrientation() == WEST)
+			tileEntity.setOrientation(ForgeDirection.UP);
 		
-		HTSM.ch.INSTANCE.sendToAll(new PacketSpikeData((byte) tileEntitySpike.getOrientation().ordinal(), tileEntitySpike.xCoord, tileEntitySpike.yCoord, tileEntitySpike.zCoord));
+		HTSM.ch.INSTANCE.sendToAll(new PacketSpikeData((byte) tileEntity.getOrientation().ordinal(), x, y, z));
 	}
 	
 	private void handleTileEntityCage(ItemStack itemStack, World world, EntityPlayer player, int x, int y, int z, int meta, float hitX, float hitY, float hitZ) {
-		TileEntityCage tileEntityCage = (TileEntityCage) world.getTileEntity(x, y, z);	
-		ItemStack stack = new ItemStack(HTSM.itemInit.getItemByName("ItemCage"));
-		stack.setTagCompound(new NBTTagCompound());
-		NBTTagCompound nbt = stack.stackTagCompound;
-		NBTTagList list = new NBTTagList();
-        
-        for (int i = 0; i < 3; ++i) {
-            if (tileEntityCage.getStackInSlot(i) != null) {
-                NBTTagCompound compound1 = new NBTTagCompound();
-                compound1.setByte("Slot", (byte)i);
-                tileEntityCage.getStackInSlot(i).writeToNBT(compound1);
-                list.appendTag(compound1);
-            }
-        }
-        nbt.setTag("CageItems", list);
-        
-        NBTTagCompound miscTag = new NBTTagCompound();
-        
-        miscTag.setBoolean("isCageClosed", tileEntityCage.isCageClosed());
-        
-        nbt.setTag("Misc", miscTag);
-        
-        if(tileEntityCage.getEntityData() != null) 
-	        nbt.setTag("EntityData", tileEntityCage.getEntityData());
-        
-		EntityItem entityItem = new EntityItem(world, x, y, z, stack);
+		
+		ITileEntityRemovable tileEntity = (ITileEntityRemovable) world.getTileEntity(x, y, z);
+				
+		EntityItem entityItem = new EntityItem(world, x, y, z, tileEntity.removeTileEntity());
 		
 		entityItem.setVelocity(0.0d, 0.0d, 0.0d);
 		
@@ -120,17 +116,9 @@ public class ItemUniversalMultiTool extends Item {
 			entityItem.setPosition(player.posX, player.posY, player.posZ);
 		
 		world.spawnEntityInWorld(entityItem);
-		
-		for(int i = 0; i < tileEntityCage.getSizeInventory(); i++)
-			tileEntityCage.setInventorySlotContents(i, null);
-		
-		tileEntityCage.setEntityData(null);
-		tileEntityCage.releaseEntity();
-		
-		world.setBlockToAir(x, y, z);
 	}
 	
-	public EnumAction getItemUseAction(ItemStack par1ItemStack) {
+	public EnumAction getItemUseAction(ItemStack stack) {
         return EnumAction.block;
     }
 }

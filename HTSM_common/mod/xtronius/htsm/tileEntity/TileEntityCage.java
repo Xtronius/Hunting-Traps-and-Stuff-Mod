@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -19,7 +20,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-public class TileEntityCage extends TickingTileEntity implements IInventory{
+public class TileEntityCage extends TickingTileEntity implements IInventory, ITileEntityRemovable{
 	
 	private ItemStack[] invContents = new ItemStack[3];
 
@@ -287,4 +288,39 @@ public class TileEntityCage extends TickingTileEntity implements IInventory{
 
 	public NBTTagCompound getEntityData() { return entityData; }
 	public void setEntityData(NBTTagCompound entityData) { this.entityData = entityData; }
+
+	@Override
+	public ItemStack removeTileEntity() {
+		ItemStack stack = new ItemStack(HTSM.itemInit.getItemByName("ItemCage"));
+		stack.setTagCompound(new NBTTagCompound());
+		NBTTagCompound nbt = stack.stackTagCompound;
+		NBTTagList list = new NBTTagList();
+        
+        for (int i = 0; i < 3; ++i) {
+            if (this.getStackInSlot(i) != null) {
+                NBTTagCompound compound1 = new NBTTagCompound();
+                compound1.setByte("Slot", (byte)i);
+                this.getStackInSlot(i).writeToNBT(compound1);
+                list.appendTag(compound1);
+            }
+        }
+        nbt.setTag("CageItems", list);
+        
+        NBTTagCompound miscTag = new NBTTagCompound();
+        
+        miscTag.setBoolean("isCageClosed", this.isCageClosed());
+        
+        nbt.setTag("Misc", miscTag);
+        
+        if(this.getEntityData() != null) 
+	        nbt.setTag("EntityData", this.getEntityData());
+        
+        for(int i = 0; i < this.getSizeInventory(); i++)
+        	this.setInventorySlotContents(i, null);
+		
+        this.setEntityData(null);
+        this.releaseEntity();
+        this.worldObj.setBlockToAir(this.xCoord, this.yCoord, this.zCoord);
+		return stack;
+	}
 }

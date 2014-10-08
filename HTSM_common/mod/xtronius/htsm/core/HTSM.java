@@ -78,6 +78,7 @@ public class HTSM {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
     	proxy.initRenderingAndTextures();
+    	proxy.registerKeybindings();
     	proxy.initSounds();
     	proxy.initMiscInfo();
     }

@@ -29,6 +29,7 @@ public class CreativeTabHTSMItems extends CreativeTabs {
     
     @SideOnly(Side.CLIENT)
     public void displayAllReleventItems(List itemList) {
+    	super.displayAllReleventItems(itemList);
         addMetaDataItems(itemList, HTSM.itemInit.getItemByName("ItemUpgrade"), ItemUpgrade.names.length);
     }
     

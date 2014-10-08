@@ -2,7 +2,7 @@ package mod.xtronius.htsm.util;
 
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.item.ItemUpgrade;
-import mod.xtronius.htsm.tileEntity.ITileEntityHTSMUpgradable;
+import mod.xtronius.htsm.tileEntity.ITileEntityUpgradable;
 import mod.xtronius.htsm.tileEntity.TileEntitySpike;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

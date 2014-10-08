@@ -5,6 +5,7 @@ import java.util.HashMap;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.lib.Reference;
 import mod.xtronius.htsm.packet.PacketCageData;
+import mod.xtronius.htsm.packet.PacketKeyMData;
 import mod.xtronius.htsm.packet.PacketPlaqueData;
 import mod.xtronius.htsm.packet.PacketSpikeData;
 import mod.xtronius.htsm.packet.PacketToggleCageGate;
@@ -22,6 +23,7 @@ public class PacketHandler {
     	INSTANCE.registerMessage(PacketToggleCageGate.Handler.class, PacketToggleCageGate.class, 1, Side.SERVER);
     	INSTANCE.registerMessage(PacketPlaqueData.Handler.class, PacketPlaqueData.class, 2, Side.CLIENT);
     	INSTANCE.registerMessage(PacketSpikeData.Handler.class, PacketSpikeData.class, 3, Side.CLIENT);
+    	INSTANCE.registerMessage(PacketKeyMData.Handler.class, PacketKeyMData.class, 4, Side.SERVER);
 //	 MyMod.network.sendToServer(new MyMessage("foobar"));
 //	 MyMod.network.sendTo(new SomeMessage(), somePlayer);
     }

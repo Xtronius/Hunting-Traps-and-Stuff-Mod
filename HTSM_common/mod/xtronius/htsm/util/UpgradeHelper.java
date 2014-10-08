@@ -1,7 +1,7 @@
 package mod.xtronius.htsm.util;
 
 import mod.xtronius.htsm.item.ItemUpgrade;
-import mod.xtronius.htsm.tileEntity.ITileEntityHTSMUpgradable;
+import mod.xtronius.htsm.tileEntity.ITileEntityUpgradable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -22,20 +22,24 @@ public class UpgradeHelper {
 
 	public static void tryAddUpgradeToBlock(World world, EntityPlayer player, int x, int y, int z) {
 		
-		ITileEntityHTSMUpgradable tileEntity = (ITileEntityHTSMUpgradable) world.getTileEntity(x, y, z);
+		ITileEntityUpgradable tileEntity = (ITileEntityUpgradable) world.getTileEntity(x, y, z);
 		
 		if(tileEntity != null) {
 			ItemStack stack = player.getCurrentEquippedItem();
 			for(int i = 0; i < tileEntity.getSizeUpgradeInventory(); i++) {
-				if(tileEntity.isItemValidForUpgradeSlot(i, stack) && !tileEntity.alreadyContainesUpgrade(stack)) {
-					if(tileEntity.getStackInUpgradeSlot(i) == null) {
-						tileEntity.setUpgradeInventorySlotContents(i, stack);
-						player.setCurrentItemOrArmor(0, null);
-						Util.sendPlayerMessage(player, ColorHelper.GREEN + "Upgrade Inserted: " + ItemUpgrade.names[stack.getItemDamage()]);
+				if(tileEntity.isItemValidForUpgradeSlot(i, stack)) {
+					if(!tileEntity.alreadyContainesUpgrade(stack)) {
+						if(tileEntity.getStackInUpgradeSlot(i) == null) {
+							tileEntity.setUpgradeInventorySlotContents(i, stack);
+							player.setCurrentItemOrArmor(0, null);
+							Util.sendPlayerMessage(player, ColorHelper.GREEN + "Upgrade Inserted: " + ItemUpgrade.names[stack.getItemDamage()]);
+							return;
+						}
+					} else {
+						Util.sendPlayerMessage(player, ColorHelper.DARK_RED + "Upgrade Already Installed.");
 						return;
-					}	
-				} else
-					Util.sendPlayerMessage(player, ColorHelper.DARK_RED + "Upgrade Already Installed.");
+					}
+				} else return;
 			}
 		} else return;
 		Util.sendPlayerMessage(player, ColorHelper.DARK_RED + "There are no more upgrade slots available.");

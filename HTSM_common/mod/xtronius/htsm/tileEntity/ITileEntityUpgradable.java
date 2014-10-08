@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-public interface ITileEntityHTSMUpgradable {
+public interface ITileEntityUpgradable {
 	
 	public int getSizeUpgradeInventory();
 

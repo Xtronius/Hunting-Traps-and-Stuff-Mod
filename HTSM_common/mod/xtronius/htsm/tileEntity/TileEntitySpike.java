@@ -21,7 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySpike extends TickingTileEntity implements IInventory, ITileEntityHTSMUpgradable{
+public class TileEntitySpike extends TickingTileEntity implements IInventory, ITileEntityUpgradable, ITileEntityRotatable {
 	
 	private ForgeDirection orientation = ForgeDirection.UP;
 	private ItemStack[] invContents = new ItemStack[1];

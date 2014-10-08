@@ -25,5 +25,7 @@ public class CreativeTabHTSMBlocks extends CreativeTabs {
     }
     
     @SideOnly(Side.CLIENT)
-    public void displayAllReleventItems(List list) {}
+    public void displayAllReleventItems(List blockList) {
+    	super.displayAllReleventItems(blockList);
+    }
 }
