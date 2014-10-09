@@ -10,12 +10,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockFallTrap extends Block {
+public class BlockFallTrap extends HTSMBlock {
 
 	public BlockFallTrap() {
 		super(Material.leaves);
 		this.setBlockName("BlockFallTrap");
-		this.setCreativeTab(HTSM.tabBlocks);
 	}
 	
 	private void fall(World world, int x, int y, int z, Entity entity, ForgeDirection dir) {

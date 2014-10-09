@@ -11,11 +11,7 @@ public abstract class CommonProxy implements IProxy{
 		HTSM.cageList = new CageList();
 	}
 
-	public void registerTileEntities() {}
-
 	public void initRenderingAndTextures() {}
-
-	public void registerEventHandlers() {}
 
 	public void registerKeybindings() { KeyBindings.init(); }
 
@@ -24,5 +20,7 @@ public abstract class CommonProxy implements IProxy{
 	public void initPacketInfo() { PacketHandler.init(); }
 
 	public void initSounds() {}
+	
+	public void registerEntities() {}
 	
 }

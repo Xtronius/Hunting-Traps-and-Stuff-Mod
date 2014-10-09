@@ -1,5 +1,9 @@
 package mod.xtronius.htsm.item;
 
+import java.util.List;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.packet.PacketSpikeData;
 import mod.xtronius.htsm.tileEntity.ITileEntityRemovable;
@@ -7,6 +11,8 @@ import mod.xtronius.htsm.tileEntity.ITileEntityRotatable;
 import mod.xtronius.htsm.tileEntity.ITileEntityUpgradable;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.tileEntity.TileEntitySpike;
+import mod.xtronius.htsm.util.ColorHelper;
+import mod.xtronius.htsm.util.StringHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -21,8 +27,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class ItemUniversalMultiTool extends Item {
 	
 	public ItemUniversalMultiTool() {
-		this.setCreativeTab(HTSM.tabItems);
 		this.setMaxStackSize(1);
+		this.hasSubtypes = true;
+	}
+	
+	public String getUnlocalizedName(ItemStack par1ItemStack) {
+	    int i = par1ItemStack.getItemDamage();
+	    return super.getUnlocalizedName() + "." + StringHelper.removeSpaces(modes[i]);
+	}
+	
+	@SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+		super.addInformation(stack, player, list, par4);
+		list.add(ColorHelper.YELLOW + "Current Mode: " + modes[stack.getItemDamage()]);
 	}
 	
 	public static String[] modes = {"Default", "Rotation", "Block Remover", "Upgrade Remover"};

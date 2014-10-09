@@ -283,7 +283,7 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory, IT
 	public int getUpgradeInventoryStackLimit() { return 64; }
 
 	@Override
-	public boolean isItemValidForUpgradeSlot(int slot, ItemStack stack) { return  (stack != null && stack.getItem().equals(HTSM.itemInit.getItemByName("ItemUpgrade")) && stack.getItemDamage() != 0); }
+	public boolean isItemValidForUpgradeSlot(int slot, ItemStack stack) { return  (stack != null && stack.getItem().equals(HTSM.htsmItem.getItemByName("ItemUpgrade")) && stack.getItemDamage() != 0); }
 	
 	public boolean canUpdate()  {return true; }
 	

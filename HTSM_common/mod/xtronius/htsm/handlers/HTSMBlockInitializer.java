@@ -8,6 +8,7 @@ import mod.xtronius.htsm.block.BlockFallTrap;
 import mod.xtronius.htsm.block.BlockIDs;
 import mod.xtronius.htsm.block.BlockPlaque;
 import mod.xtronius.htsm.block.BlockSpike;
+import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.lib.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -26,15 +27,16 @@ public class HTSMBlockInitializer {
 	}
 	
 	private void init() {
-		addBlock(new BlockCage(), "BlockCage");
-		addBlock(new BlockPlaque(), "BlockPlaque");
-		addBlock(new BlockSpike(), "BlockSpike");
-		addBlock(new BlockFallTrap(), "BlockFallTrap");
+		addBlock(new BlockCage(), "BlockCage", false);
+		addBlock(new BlockPlaque(), "BlockPlaque", true);
+		addBlock(new BlockSpike(), "BlockSpike", true);
+		addBlock(new BlockFallTrap(), "BlockFallTrap", true);
 	}
 	
-	private void addBlock(Block block, String name) { 
+	private void addBlock(Block block, String name, boolean addBlockToCreativeTab) { 
 		block.setBlockName(name); 
 		BlockIDs.genNewBlockIDObj(name); 
+		if(addBlockToCreativeTab) block.setCreativeTab(HTSM.tabBlocks);
 		blockNames.add(name); 
 		blocks.put(name, block); 
 	}

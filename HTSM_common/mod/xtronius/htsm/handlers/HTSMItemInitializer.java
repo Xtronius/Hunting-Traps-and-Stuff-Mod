@@ -3,7 +3,9 @@ package mod.xtronius.htsm.handlers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.item.*;
+import mod.xtronius.htsm.item.gun.*;
 import mod.xtronius.htsm.lib.Reference;
 import net.minecraft.item.Item;
 
@@ -21,14 +23,17 @@ public class HTSMItemInitializer {
 	}
 	
 	private void init() {
-		addItem(new ItemUniversalMultiTool(), "ItemUniversalMultiTool");
-		addItem(new ItemCage(), "ItemCage");
-		addItem(new ItemUpgrade(), "ItemUpgrade");
+		addItem(new ItemUniversalMultiTool(), "ItemUniversalMultiTool", true);
+		addItem(new ItemCage(), "ItemCage", true);
+		addItem(new ItemUpgrade(), "ItemUpgrade", false);
+		addItem(new ItemGun(new ItemShotgun()), "ItemShotGun", true);
+		addItem(new ItemAmmo(), "ItemShotGunAmmo", true);
 	}
 	
-	private void addItem(Item item, String name) {
+	private void addItem(Item item, String name, boolean addItemToCreativeTab) {
 		item.setUnlocalizedName(name);
 		item.setTextureName(Reference.MOD_ASSET + ':' + name);
+		if(addItemToCreativeTab) item.setCreativeTab(HTSM.tabItems);
 		ItemIDs.genNewItemIDObj(name); 
 		itemNames.add(name); 
 		items.put(name, item); 

@@ -1,6 +1,7 @@
 package mod.xtronius.htsm.util;
 
 public class StringHelper {
+	
 	public static String splitCamelCase(String s) {
 		   return s.replaceAll(
 		      String.format("%s|%s|%s",
@@ -10,5 +11,7 @@ public class StringHelper {
 		      ),
 		      " "
 		   );
-		}
+	}
+	
+	public static String removeSpaces(String s) { return s.replaceAll("\\s+", ""); }
 }

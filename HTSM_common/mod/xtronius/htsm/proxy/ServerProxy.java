@@ -1,12 +1,11 @@
 package mod.xtronius.htsm.proxy;
 
+import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.entity.*;
+
+import cpw.mods.fml.common.registry.EntityRegistry;
+
 public class ServerProxy extends CommonProxy{
-
-	@Override
-	public void registerTileEntities() {}
-
-	@Override
-	public void registerEventHandlers() {}
 
 	@Override
 	public void initMiscInfo() {}
@@ -25,4 +24,9 @@ public class ServerProxy extends CommonProxy{
 
 	@Override
 	public void initPacketInfo() {}
+	
+	@Override
+	public void registerEntities() {
+		EntityRegistry.registerModEntity(EntityBullet.class, "Bullet", 1, HTSM.INSTANCE, 250, 5, true);
+	}
 }

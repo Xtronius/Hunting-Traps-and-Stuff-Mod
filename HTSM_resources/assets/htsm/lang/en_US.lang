@@ -1,8 +1,29 @@
 # Items
 item.ItemCage.name=Cage Trap
-item.ItemUniversalMultiTool=Universal Multi Tool
+item.ItemUniversalMultiTool.name=Universal Multi Tool
+item.ItemUniversalMultiTool.Default.name=Universal Multi Tool (Default Mode)
+item.ItemUniversalMultiTool.Rotation.name=Universal Multi Tool (Rotation Mode)
+item.ItemUniversalMultiTool.BlockRemover.name=Universal Multi Tool (Block Remover Mode)
+item.ItemUniversalMultiTool.UpgradeRemover.name=Universal Multi Tool (Upgrade Remover Mode)
+item.ItemUpgrade.BlankUpgrade.name=Blank Upgrade
+item.ItemUpgrade.HopperUpgrade.name=Hopper Upgrade
+item.ItemUpgrade.RedstoneUpgrade.name=Redstone Upgrade
+item.ItemUpgrade.FireUpgrade.name=Blazing Upgrade
+item.ItemUpgrade.PoisonUpgrade.name=Poison Upgrade
+item.ItemUpgrade.WitherUpgrade.name=Withering Upgrade
+item.ItemUpgrade.HungerUpgrade.name=Zombifying Upgrade
+item.ItemUpgrade.SlownessUpgrade.name=Slowness Upgrade
+item.ItemUpgrade.BlindnessUpgrade.name=Blinding Upgrade
+item.ItemUpgrade.NauseaUpgrade.name=Nauseating Upgrade
+item.ItemUpgrade.OtherUpgrade.name=Other Upgrade
+
 
 # Blocks
 tile.BlockCage.name=Cage Trap
 tile.BlockPlaque.name=Plaque
 tile.BlockSpike.name=Spike Trap
+tile.BlockFallTrap.name=Fall Trap
+
+# Creative Tabs
+itemGroup.HTSM Items=HTSM Items
+itemGroup.HTSM Blocks=HTSM Blocks

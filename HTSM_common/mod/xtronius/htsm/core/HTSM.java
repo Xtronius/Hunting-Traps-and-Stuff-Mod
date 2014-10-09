@@ -27,8 +27,8 @@ public class HTSM {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	
 	public static IProxy proxy;
-	public static HTSMBlockInitializer blockInit = HTSMBlockInitializer.instance;
-	public static HTSMItemInitializer itemInit = HTSMItemInitializer.instance;
+	public static HTSMBlockInitializer htsmBlock = HTSMBlockInitializer.instance;
+	public static HTSMItemInitializer htsmItem = HTSMItemInitializer.instance;
 	
 	public static CreativeTabs tabItems = new CreativeTabHTSMItems(CreativeTabs.getNextID(), "HTSM Items");
 	public static CreativeTabs tabBlocks = new CreativeTabHTSMBlocks(CreativeTabs.getNextID(), "HTSM Blocks");
@@ -38,7 +38,7 @@ public class HTSM {
 	public static Debug debug = new Debug();
 	
 	@Instance(Reference.MOD_ID)
-	public static HTSM instance;
+	public static HTSM INSTANCE;
 	
 	public static CageList cageList;
 	
@@ -46,6 +46,7 @@ public class HTSM {
     public void preInit(FMLPreInitializationEvent event) {
 		
 		proxy.initPacketInfo();
+		proxy.registerEntities();
 		
 		new HTSMBlockInitializer();
 		new HTSMItemInitializer();

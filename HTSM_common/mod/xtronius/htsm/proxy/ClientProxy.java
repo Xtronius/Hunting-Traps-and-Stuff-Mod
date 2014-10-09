@@ -18,8 +18,8 @@ public class ClientProxy extends CommonProxy {
 	 public void initRenderingAndTextures() {
 		 ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCage.class, new RenderCage());
 		 ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPlaque.class, new RenderPlaque());
-		 MinecraftForgeClient.registerItemRenderer(HTSM.itemInit.getItemByName("ItemCage"), new RenderItemCage());
-		 MinecraftForgeClient.registerItemRenderer(HTSM.blockInit.getBlockAsItemByName("BlockSpike"), new RenderItemSpike());
+		 MinecraftForgeClient.registerItemRenderer(HTSM.htsmItem.getItemByName("ItemCage"), new RenderItemCage());
+		 MinecraftForgeClient.registerItemRenderer(HTSM.htsmBlock.getBlockAsItemByName("BlockSpike"), new RenderItemSpike());
 		 
 		 RenderTypes.BLOCK_SPIKE = RenderingRegistry.getNextAvailableRenderId();
 		 

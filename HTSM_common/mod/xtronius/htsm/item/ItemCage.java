@@ -23,7 +23,6 @@ import net.minecraft.world.World;
 public class ItemCage extends Item {
 	
 	public ItemCage() {
-		this.setCreativeTab(HTSM.tabBlocks);
 		this.setMaxStackSize(1);
 	}
 	
@@ -49,15 +48,15 @@ public class ItemCage extends Item {
         else if (!player.canPlayerEdit(x, y, z, meta, stack))  {
             return false;
         }
-        else if (y == 255 && HTSM.blockInit.getBlockByName("BlockCage").getMaterial().isSolid()) {
+        else if (y == 255 && HTSM.htsmBlock.getBlockByName("BlockCage").getMaterial().isSolid()) {
             return false;
         }
-        else if (world.canPlaceEntityOnSide(HTSM.blockInit.getBlockByName("BlockCage"), x, y, z, false, meta, player, stack)) {
+        else if (world.canPlaceEntityOnSide(HTSM.htsmBlock.getBlockByName("BlockCage"), x, y, z, false, meta, player, stack)) {
             int i1 = this.getMetadata(stack.getItemDamage());
-            int j1 = HTSM.blockInit.getBlockByName("BlockCage").onBlockPlaced(world, x, y, z, meta, hitX, hitY, hitZ, i1);
+            int j1 = HTSM.htsmBlock.getBlockByName("BlockCage").onBlockPlaced(world, x, y, z, meta, hitX, hitY, hitZ, i1);
 
             if (placeBlockAt(stack, player, world, x, y, z, meta, hitX, hitY, hitZ, j1)) {
-                world.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), HTSM.blockInit.getBlockByName("BlockCage").stepSound.func_150496_b(), (HTSM.blockInit.getBlockByName("BlockCage").stepSound.getVolume() + 1.0F) / 2.0F, HTSM.blockInit.getBlockByName("BlockCage").stepSound.getPitch() * 0.8F);
+                world.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), HTSM.htsmBlock.getBlockByName("BlockCage").stepSound.func_150496_b(), (HTSM.htsmBlock.getBlockByName("BlockCage").stepSound.getVolume() + 1.0F) / 2.0F, HTSM.htsmBlock.getBlockByName("BlockCage").stepSound.getPitch() * 0.8F);
                 --stack.stackSize;
             }
 
@@ -70,13 +69,13 @@ public class ItemCage extends Item {
 	
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
 
-       if (!world.setBlock(x, y, z, HTSM.blockInit.getBlockByName("BlockCage"), metadata, 3)) {
+       if (!world.setBlock(x, y, z, HTSM.htsmBlock.getBlockByName("BlockCage"), metadata, 3)) {
            return false;
        }
 
-       if (world.getBlock(x, y, z) == HTSM.blockInit.getBlockByName("BlockCage")) {
-    	   HTSM.blockInit.getBlockByName("BlockCage").onBlockPlacedBy(world, x, y, z, player, stack);
-    	   HTSM.blockInit.getBlockByName("BlockCage").onPostBlockPlaced(world, x, y, z, metadata);
+       if (world.getBlock(x, y, z) == HTSM.htsmBlock.getBlockByName("BlockCage")) {
+    	   HTSM.htsmBlock.getBlockByName("BlockCage").onBlockPlacedBy(world, x, y, z, player, stack);
+    	   HTSM.htsmBlock.getBlockByName("BlockCage").onPostBlockPlaced(world, x, y, z, metadata);
     	   
     	   TileEntityCage tileEntity = (TileEntityCage) world.getTileEntity(x, y, z);
 			
@@ -162,7 +161,7 @@ public class ItemCage extends Item {
 		                list.add(ColorHelper.GREEN + "Slot " + j + ": " + Util.getUnlocalizedNameInefficiently(Item.getItemById(compound1.getShort("id"))) +  ' ' + compound1.getByte("Count"));
 		        }
 			} else 
-				list.add("No Items Stores");
+				list.add("No Items Stored");
 		}
 
     }

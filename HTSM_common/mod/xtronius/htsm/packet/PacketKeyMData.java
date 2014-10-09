@@ -51,7 +51,7 @@ public class PacketKeyMData implements IMessage{
        		ItemStack stack = targetedPlayer.getCurrentEquippedItem();
        		
        		if(stack != null) {
-       			if(stack.getItem().equals(HTSM.itemInit.getItemByName("ItemUniversalMultiTool"))) {
+       			if(stack.getItem().equals(HTSM.htsmItem.getItemByName("ItemUniversalMultiTool"))) {
        				if(stack.getItemDamage() < ItemUniversalMultiTool.modes.length-1) {
        					stack.setItemDamage(stack.getItemDamage() + 1);
        				}

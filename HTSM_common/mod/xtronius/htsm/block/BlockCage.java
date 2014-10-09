@@ -39,7 +39,7 @@ public class BlockCage extends HTSMBlockContainer {
 	    	if(player.isSneaking())  {
     	    	return true;
 	    	} else {
-		    	FMLNetworkHandler.openGui(player, HTSM.instance, GuiIDs.guiCageID, world, x, y, z);
+		    	FMLNetworkHandler.openGui(player, HTSM.INSTANCE, GuiIDs.guiCageID, world, x, y, z);
 		    	return true;
     	    }
 	    }

@@ -16,11 +16,12 @@ public class CreativeTabHTSMItems extends CreativeTabs {
     public CreativeTabHTSMItems(int id, String unlocalizedName) {
  
         super(id, unlocalizedName);
+        this.setBackgroundImageName("item_search.png");
     }
  
     @SideOnly(Side.CLIENT)
     public Item getTabIconItem() {
-        return HTSM.itemInit.getItemByName("ItemUniversalMultiTool");
+        return HTSM.htsmItem.getItemByName("ItemUniversalMultiTool");
     }
     
     public boolean hasSearchBar() {
@@ -30,7 +31,7 @@ public class CreativeTabHTSMItems extends CreativeTabs {
     @SideOnly(Side.CLIENT)
     public void displayAllReleventItems(List itemList) {
     	super.displayAllReleventItems(itemList);
-        addMetaDataItems(itemList, HTSM.itemInit.getItemByName("ItemUpgrade"), ItemUpgrade.names.length);
+        addMetaDataItems(itemList, HTSM.htsmItem.getItemByName("ItemUpgrade"), ItemUpgrade.names.length);
     }
     
     public void addMetaDataItems(List list, Item item, int range) {

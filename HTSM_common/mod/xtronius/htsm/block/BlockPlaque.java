@@ -37,7 +37,6 @@ public class BlockPlaque extends HTSMBlockContainer {
 		super(Material.rock);
 		this.setBlockTextureName("BlockCage");
 		this.setLightOpacity(0);
-		this.setCreativeTab(HTSM.tabBlocks);
 		
 		this.setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 	}
@@ -97,7 +96,7 @@ public class BlockPlaque extends HTSMBlockContainer {
 	    				}
 	    			}
 	    			
-					PacketHandler.INSTANCE.getPacketFrom(new PacketPlaqueData(tileEntity.getStackInSlot(0), x, y, z));
+	    			HTSM.ch.INSTANCE.sendToAll(new PacketPlaqueData(tileEntity.getStackInSlot(0), x, y, z));
 	    		}
 	    		
 	    		return true;

@@ -10,6 +10,5 @@ public class HTSMEventInitializer {
 		
 //		FMLCommonHandler.instance().bus().register(new RCTickHandler());
 		FMLCommonHandler.instance().bus().register(new KeyInputHandler());
-		MinecraftForge.EVENT_BUS.register(new HTSMEntityHandler());
 	}
 }

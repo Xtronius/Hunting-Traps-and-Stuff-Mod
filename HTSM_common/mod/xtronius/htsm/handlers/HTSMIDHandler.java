@@ -16,8 +16,8 @@ public class HTSMIDHandler {
         int idGui = 1;
 
         
-        for(String name : HTSM.blockInit.blockNames) BlockIDs.setBlockID(name, config.get("BlockIDs", name + "ID", idB++).getInt());  
-        for(String name : HTSM.itemInit.itemNames) ItemIDs.setItemID(name, config.get("ItemIDs", name + "ID", idI++).getInt()); 
+        for(String name : HTSM.htsmBlock.blockNames) BlockIDs.setBlockID(name, config.get("BlockIDs", name + "ID", idB++).getInt());  
+        for(String name : HTSM.htsmItem.itemNames) ItemIDs.setItemID(name, config.get("ItemIDs", name + "ID", idI++).getInt()); 
 		  
 		  config.save();
 	}

@@ -109,12 +109,12 @@ public class TileEntityCage extends TickingTileEntity implements IInventory, ITi
 											this.targetEntity.readFromNBT(this.targetEntity.getEntityData());
 											this.setCageClosed(true);
 											
-											this.worldObj.notifyBlockOfNeighborChange(this.xCoord+1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord+1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord+1, HTSM.blockInit.getBlockByName("BlockCage"));
-											this.worldObj.notifyBlockOfNeighborChange(this.xCoord-1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord-1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord-1, HTSM.blockInit.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord+1, this.yCoord, this.zCoord, HTSM.htsmBlock.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord+1, this.zCoord, HTSM.htsmBlock.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord+1, HTSM.htsmBlock.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord-1, this.yCoord, this.zCoord, HTSM.htsmBlock.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord-1, this.zCoord, HTSM.htsmBlock.getBlockByName("BlockCage"));
+											this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord-1, HTSM.htsmBlock.getBlockByName("BlockCage"));
 										}
 									 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
 								 else if(this.targetEntity != null) this.targetEntity.getNavigator().tryMoveToXYZ(this.xCoord, yCoord, zCoord, 1.0f);
@@ -191,12 +191,12 @@ public class TileEntityCage extends TickingTileEntity implements IInventory, ITi
     }
 	
 	public void updateNeighbors() {
-		this.worldObj.notifyBlockOfNeighborChange(this.xCoord+1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord+1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord+1, HTSM.blockInit.getBlockByName("BlockCage"));
-		this.worldObj.notifyBlockOfNeighborChange(this.xCoord-1, this.yCoord, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord-1, this.zCoord, HTSM.blockInit.getBlockByName("BlockCage"));
-		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord-1, HTSM.blockInit.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord+1, this.yCoord, this.zCoord, HTSM.htsmBlock.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord+1, this.zCoord, HTSM.htsmBlock.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord+1, HTSM.htsmBlock.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord-1, this.yCoord, this.zCoord, HTSM.htsmBlock.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord-1, this.zCoord, HTSM.htsmBlock.getBlockByName("BlockCage"));
+		this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord-1, HTSM.htsmBlock.getBlockByName("BlockCage"));
 	}
 	
 	public boolean releaseEntity() {
@@ -291,7 +291,7 @@ public class TileEntityCage extends TickingTileEntity implements IInventory, ITi
 
 	@Override
 	public ItemStack removeTileEntity() {
-		ItemStack stack = new ItemStack(HTSM.itemInit.getItemByName("ItemCage"));
+		ItemStack stack = new ItemStack(HTSM.htsmItem.getItemByName("ItemCage"));
 		stack.setTagCompound(new NBTTagCompound());
 		NBTTagCompound nbt = stack.stackTagCompound;
 		NBTTagList list = new NBTTagList();

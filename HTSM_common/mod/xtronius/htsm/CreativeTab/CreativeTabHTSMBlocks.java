@@ -13,11 +13,12 @@ public class CreativeTabHTSMBlocks extends CreativeTabs {
  
     public CreativeTabHTSMBlocks(int id, String unlocalizedName) {
         super(id, unlocalizedName);
+        this.setBackgroundImageName("item_search.png");
     }
  
     @SideOnly(Side.CLIENT)
     public Item getTabIconItem() {
-        return HTSM.itemInit.getItemByName("ItemCage");
+        return HTSM.htsmItem.getItemByName("ItemCage");
     }
     
     public boolean hasSearchBar() {

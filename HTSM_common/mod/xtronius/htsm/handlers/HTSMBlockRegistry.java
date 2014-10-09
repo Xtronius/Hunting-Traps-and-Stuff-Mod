@@ -12,8 +12,8 @@ import net.minecraft.item.ItemStack;
 public class HTSMBlockRegistry {
 	
 	public HTSMBlockRegistry() {
-		for(String name : HTSM.blockInit.blockNames) { 
-			Block block = HTSM.blockInit.blocks.get(name);
+		for(String name : HTSM.htsmBlock.blockNames) { 
+			Block block = HTSM.htsmBlock.blocks.get(name);
 			regBlockAuto(block, name);
 		}
 		

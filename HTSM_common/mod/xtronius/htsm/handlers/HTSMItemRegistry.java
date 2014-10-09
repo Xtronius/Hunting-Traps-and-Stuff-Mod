@@ -11,8 +11,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class HTSMItemRegistry {
 	
 	public HTSMItemRegistry() {
-		for(String name : HTSM.itemInit.itemNames) { 
-			Item item = HTSM.itemInit.getItemByName(name);
+		for(String name : HTSM.htsmItem.itemNames) { 
+			Item item = HTSM.htsmItem.getItemByName(name);
 			regItemAuto(item, name);
 		}
 		
