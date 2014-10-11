@@ -1,3 +1,7 @@
 {
-   "ItemUniversalMultiTool": {"category": "master","sounds": [{"name": "ItemUniversalMultiTool","stream": false}]}
+   "ItemUniversalMultiTool": {"category": "master","sounds": [{"name": "ItemUniversalMultiTool","stream": false}]},
+   
+   "Shotgun_Fire": {"category": "player","sounds": [{"name": "Shotgun_Fire","stream": false}]},
+   "Shotgun_Reload": {"category": "player","sounds": [{"name": "Shotgun_Reload","stream": false}]},
+   "Shotgun_Reload2": {"category": "player","sounds": [{"name": "Shotgun_Reload2","stream": false}]}
 } 

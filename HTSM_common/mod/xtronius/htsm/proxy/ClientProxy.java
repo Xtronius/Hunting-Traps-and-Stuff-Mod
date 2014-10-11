@@ -1,10 +1,18 @@
 package mod.xtronius.htsm.proxy;
 
 import mod.xtronius.htsm.core.HTSM;
-import mod.xtronius.htsm.item.renderer.*;
+import mod.xtronius.htsm.entity.EntityBullet;
+import mod.xtronius.htsm.entity.renderer.RenderBullet;
+import mod.xtronius.htsm.entity.renderer.model.ModelBullet;
+import mod.xtronius.htsm.item.renderer.RenderItemCage;
+import mod.xtronius.htsm.item.renderer.RenderItemSpike;
 import mod.xtronius.htsm.lib.RenderTypes;
-import mod.xtronius.htsm.tileEntity.*;
-import mod.xtronius.htsm.tileEntity.renderer.*;
+import mod.xtronius.htsm.tileEntity.TileEntityCage;
+import mod.xtronius.htsm.tileEntity.TileEntityPlaque;
+import mod.xtronius.htsm.tileEntity.TileEntitySpike;
+import mod.xtronius.htsm.tileEntity.renderer.RenderCage;
+import mod.xtronius.htsm.tileEntity.renderer.RenderPlaque;
+import mod.xtronius.htsm.tileEntity.renderer.RenderSpike;
 import mod.xtronius.htsm.util.ClientSoundHelper;
 import mod.xtronius.htsm.util.KeyBindings;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -22,8 +30,9 @@ public class ClientProxy extends CommonProxy {
 		 MinecraftForgeClient.registerItemRenderer(HTSM.htsmBlock.getBlockAsItemByName("BlockSpike"), new RenderItemSpike());
 		 
 		 RenderTypes.BLOCK_SPIKE = RenderingRegistry.getNextAvailableRenderId();
-		 
 		 ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpike.class, new RenderSpike());
+		 
+		 RenderingRegistry.registerEntityRenderingHandler(EntityBullet.class, new RenderBullet(new ModelBullet()));
 	 }
 	 
 	 @Override

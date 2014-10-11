@@ -16,6 +16,8 @@ item.ItemUpgrade.SlownessUpgrade.name=Slowness Upgrade
 item.ItemUpgrade.BlindnessUpgrade.name=Blinding Upgrade
 item.ItemUpgrade.NauseaUpgrade.name=Nauseating Upgrade
 item.ItemUpgrade.OtherUpgrade.name=Other Upgrade
+item.ItemShotGun.name=Hunter's Shotgun
+item.ItemShotGunAmmo.name=Shotgun Ammo
 
 
 # Blocks

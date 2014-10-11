@@ -16,12 +16,12 @@ public class ItemShotgun implements IGun {
 
   @Override
   public String getReloadSound() {
-    return "reload";
+    return "Shotgun_Reload";
   }
 
   @Override
   public String getShootSound() {
-    return "dbshotgun";
+    return "Shotgun_Fire";
   }
 
   @Override

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.item.*;
 import mod.xtronius.htsm.item.gun.*;
+import mod.xtronius.htsm.item.gun.ammo.ItemAmmo;
 import mod.xtronius.htsm.lib.Reference;
 import net.minecraft.item.Item;
 
@@ -27,7 +28,8 @@ public class HTSMItemInitializer {
 		addItem(new ItemCage(), "ItemCage", true);
 		addItem(new ItemUpgrade(), "ItemUpgrade", false);
 		addItem(new ItemGun(new ItemShotgun()), "ItemShotGun", true);
-		addItem(new ItemAmmo(), "ItemShotGunAmmo", true);
+		addItem(new ItemAmmo(3), "ItemShotGunAmmo", true);
+		addItem(new ItemAmmoBag(), "ItemAmmoBag", true);
 	}
 	
 	private void addItem(Item item, String name, boolean addItemToCreativeTab) {
