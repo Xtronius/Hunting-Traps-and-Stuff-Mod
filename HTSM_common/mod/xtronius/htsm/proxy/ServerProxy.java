@@ -24,9 +24,4 @@ public class ServerProxy extends CommonProxy{
 
 	@Override
 	public void initPacketInfo() {}
-	
-	@Override
-	public void registerEntities() {
-		EntityRegistry.registerModEntity(EntityBullet.class, "Bullet", 1, HTSM.INSTANCE, 250, 5, true);
-	}
 }

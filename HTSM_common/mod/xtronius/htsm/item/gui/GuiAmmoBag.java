@@ -34,6 +34,10 @@ public class GuiAmmoBag extends GuiContainer {
         }
     }
 
+    protected boolean checkHotbarKeys(int key) {
+        return false;
+    }
+
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y) {
         if (this.parentItemStack.getItemDamage() == 0 || this.parentItemStack.getItemDamage() == 1) {

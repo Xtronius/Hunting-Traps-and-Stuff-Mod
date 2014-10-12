@@ -1,15 +1,19 @@
 package mod.xtronius.htsm.item.gun;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.world.World;
 
 public interface IGun {
-  int getRounds();
+  public int getRounds();
 
-  int getDamage();
+  public int getDamage();
 
-  String getReloadSound();
+  public String getReloadSound();
 
-  String getShootSound();
+  public String getShootSound();
 
-  Item getAmmo();
+  public Item getAmmo();
+  
+  public void fireGun(World world, EntityPlayer player, int gunDamage);
 }

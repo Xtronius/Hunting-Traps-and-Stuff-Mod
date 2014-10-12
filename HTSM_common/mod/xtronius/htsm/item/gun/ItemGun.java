@@ -17,18 +17,17 @@ public class ItemGun extends Item {
     gun = iGun;
     maxStackSize = 1;
     setMaxDamage(gun.getRounds());
+    this.setFull3D();
   }
 
   @Override
   public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityPlayer player, int i) {
+	  
     if (itemstack.getItemDamage() < gun.getRounds()) {
-      EntityBullet entitybullet = new EntityBullet(world, player, player.isSneaking(), player.isSprinting(), gun.getDamage());
       world.playSoundAtEntity(player, Reference.MOD_ASSET + ":" + gun.getShootSound(), 1.0F, 1.0F);
       itemstack.damageItem(1, player);
-
-      if (!world.isRemote) {
-        world.spawnEntityInWorld(entitybullet);
-      }
+      gun.fireGun(world, player, gun.getDamage());
+        
     } else if (itemstack.getItemDamage() >= gun.getRounds() && player.inventory.hasItem(gun.getAmmo()) && player.isSneaking()) {
       int k = getMaxItemUseDuration(itemstack) - i;
       float f1 = k / 20F;
@@ -60,7 +59,6 @@ public class ItemGun extends Item {
     				
     				for(int slot = 0; slot < array.length; slot++) {
     					if(array[slot] != null) {
-    						System.out.println("stugg" + array[slot]);
     						ammo = array[slot];
     						if(array[slot].stackSize > 1) {
     							array[slot].stackSize--;

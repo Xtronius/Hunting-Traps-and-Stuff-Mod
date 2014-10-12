@@ -16,8 +16,6 @@ import net.minecraft.world.World;
 
 public class EntityBullet extends EntityThrowable {
   private int bulletdamage;
-  private boolean isCrouching;
-  private boolean isRunnng;
   public Entity shootingEntity;
 
   public EntityBullet(World world) {
@@ -25,11 +23,9 @@ public class EntityBullet extends EntityThrowable {
     this.setSize(0.1F, 0.1F);
   }
 
-  public EntityBullet(World world, EntityLivingBase entityLivingBase, boolean isCrouching, boolean isRunnng, int damage) {
+  public EntityBullet(World world, EntityLivingBase entityLivingBase, int damage) {
     super(world, entityLivingBase);
-    this.bulletdamage = damage;
-    this.isCrouching = isCrouching;
-    this.isRunnng = isRunnng;
+    this.bulletdamage = 5;
     this.shootingEntity = entityLivingBase;
     this.setSize(0.5F, 0.5F);
     this.setLocationAndAngles(entityLivingBase.posX, entityLivingBase.posY + entityLivingBase.getEyeHeight(), entityLivingBase.posZ, entityLivingBase.rotationYaw, entityLivingBase.rotationPitch);
@@ -38,9 +34,42 @@ public class EntityBullet extends EntityThrowable {
     this.posZ -= MathHelper.sin(rotationYaw / 180.0F * (float)Math.PI) * 0.16F;
     this.setPosition(posX, posY, posZ);
     this.yOffset = 0.0F;
+    
     this.motionX = -MathHelper.sin(rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(rotationPitch / 180.0F * (float)Math.PI);
     this. motionZ = MathHelper.cos(rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(rotationPitch / 180.0F * (float)Math.PI);
     this.motionY = (-MathHelper.sin(rotationPitch / 180.0F * (float)Math.PI));
+    
+    float randX = 0.0F;
+	float randY = 0.0F;
+	float randZ = 0.0F;
+	  
+	float rand2X = (float) Math.random();
+	float rand2Y = (float) Math.random();
+	float rand2Z = (float) Math.random();
+	
+	if(!entityLivingBase.isSneaking()) {
+		randX = (float) Math.random() * 0.150F;
+		randY = (float) Math.random() * 0.150F;
+		randZ = (float) Math.random() * 0.150F;
+	} else {
+		randX = (float) Math.random() * 0.125F;
+		randY = (float) Math.random() * 0.125F;
+		randZ = (float) Math.random() * 0.125F;
+	}
+	
+	if(rand2X < 0.55)
+		this.motionX = motionX + randX;
+	else
+		this.motionX = motionX - randX;
+	if(rand2Y < 0.55)
+		this.motionY = motionY + randY;
+	else
+		this.motionY = motionY - randY;
+	if(rand2Z < 0.55)
+		this.motionZ = motionZ + randZ;
+	else
+		this.motionZ = motionZ - randZ;
+
     this.setThrowableHeading(motionX, motionY, motionZ, 1.5F, 1.0F);
   }
 
@@ -55,34 +84,6 @@ public class EntityBullet extends EntityThrowable {
 
   @Override
   public void setVelocity(double motionX, double motionY, double motionZ) {
-	float randX = 0.0F;
-	float randY = 0.0F;
-	float randZ = 0.0F;
-	  
-	float rand2X = (float) Math.random();
-	float rand2Y = (float) Math.random();
-	float rand2Z = (float) Math.random();
-	  
-	  
-	  
-	if(!this.isCrouching) {
-		randX = (float) Math.random() * 15.0F;
-		randX = (float) Math.random() * 15.0F;
-		randX = (float) Math.random() * 15.0F;
-	}
-	
-	if(rand2X > 5.0)
-		this.motionX = motionX + randX;
-	else
-		this.motionX = motionX - randX;
-	if(rand2X > 5.0)
-		this.motionY = motionY + randY;
-	else
-		this.motionY = motionY - randY;
-	if(rand2X > 5.0)
-		this.motionZ = motionZ + randZ;
-	else
-		this.motionZ = motionZ - randZ;
 	
 	if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
 	  float f = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
@@ -98,17 +99,28 @@ public class EntityBullet extends EntityThrowable {
   @Override
   protected void onImpact(MovingObjectPosition movingObjectPosition) {
 	  
-    if (movingObjectPosition.entityHit != null) {
+	  if (movingObjectPosition.entityHit != null) {
       int var2 = bulletdamage;
 
       if (movingObjectPosition.entityHit instanceof EntityLivingBase) {
+    	  movingObjectPosition.entityHit.hurtResistantTime = 0;
     	  movingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, shootingEntity), var2);
+    	  
+    	  if(!movingObjectPosition.entityHit.isDead) {
+	    	  for(int i = 0; i < movingObjectPosition.entityHit.width; i++) {
+	    		  for(int j = 0; j < movingObjectPosition.entityHit.height; j++) {
+	    			  this.worldObj.playAuxSFX(2001, (int) movingObjectPosition.entityHit.posX, (int) movingObjectPosition.entityHit.posY+j, (int) movingObjectPosition.entityHit.posZ, Block.getIdFromBlock(Blocks.redstone_wire)  + (0 << 12));
+	    		  }
+	    	  }
+      	  }
     	  this.worldObj.playSoundAtEntity(this.shootingEntity, "random.successful_hit", 1.0F, 1.0F);
+    	  this.setDead();
       }
 
       if (movingObjectPosition.entityHit instanceof EntityPlayer) {
     	  
     	  this.worldObj.playSoundAtEntity(movingObjectPosition.entityHit, "random.successful_hit", 1.0F, 1.0F);
+    	  this.setDead();
         if (worldObj.difficultySetting.equals(EnumDifficulty.EASY)) {
           int j = rand.nextInt(10);
           if (j == 0) {

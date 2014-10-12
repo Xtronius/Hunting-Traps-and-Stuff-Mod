@@ -23,9 +23,9 @@ public class RenderBullet extends Render {
   public void renderBullet(Entity entity, double x, double y, double z) {
     GL11.glPushMatrix();
     GL11.glDisable(GL11.GL_CULL_FACE);
-    GL11.glTranslatef((float)x, (float)y, (float)z);
+    GL11.glTranslatef((float)x-1, (float)y, (float)z);
     GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-    GL11.glScalef(1.0F, 1.0F, 1.0F);
+    GL11.glScalef(0.03125F, 0.03125F, 0.03125F);
     GL11.glEnable(GL11.GL_ALPHA_TEST);
     bindEntityTexture(entity);
     modelBullet.render(0.0625F);
@@ -34,7 +34,7 @@ public class RenderBullet extends Render {
 
   @Override
   protected ResourceLocation getEntityTexture(Entity par1Entity) {
-    return new ResourceLocation(Reference.MOD_ASSET + "textures/entities/bullet.png");
+    return new ResourceLocation(Reference.MOD_ASSET + ":textures/entities/bullet.png");
   }
 
   @Override

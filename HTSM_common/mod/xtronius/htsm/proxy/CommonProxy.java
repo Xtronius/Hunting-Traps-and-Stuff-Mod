@@ -1,6 +1,8 @@
 package mod.xtronius.htsm.proxy;
 
+import cpw.mods.fml.common.registry.EntityRegistry;
 import mod.xtronius.htsm.core.HTSM;
+import mod.xtronius.htsm.entity.EntityBullet;
 import mod.xtronius.htsm.handlers.PacketHandler;
 import mod.xtronius.htsm.util.KeyBindings;
 import mod.xtronius.htsm.util.list.CageList;
@@ -21,6 +23,8 @@ public abstract class CommonProxy implements IProxy{
 
 	public void initSounds() {}
 	
-	public void registerEntities() {}
+	public void registerEntities() {
+		EntityRegistry.registerModEntity(EntityBullet.class, "Bullet", 0, HTSM.INSTANCE, 250, 1, true);
+	}
 	
 }

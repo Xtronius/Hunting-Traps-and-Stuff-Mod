@@ -18,6 +18,7 @@ item.ItemUpgrade.NauseaUpgrade.name=Nauseating Upgrade
 item.ItemUpgrade.OtherUpgrade.name=Other Upgrade
 item.ItemShotGun.name=Hunter's Shotgun
 item.ItemShotGunAmmo.name=Shotgun Ammo
+item.ItemAmmoBag.name=Ammo Bag
 
 
 # Blocks

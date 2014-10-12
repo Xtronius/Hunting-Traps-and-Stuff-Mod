@@ -18,6 +18,7 @@ import mod.xtronius.htsm.util.KeyBindings;
 import net.minecraftforge.client.MinecraftForgeClient;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
 
 
 public class ClientProxy extends CommonProxy {

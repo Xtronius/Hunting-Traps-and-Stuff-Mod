@@ -7,6 +7,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.init.Blocks;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -15,6 +16,27 @@ public class BlockFallTrap extends HTSMBlock {
 	public BlockFallTrap() {
 		super(Material.leaves);
 		this.setBlockName("BlockFallTrap");
+		
+		this.setBlockBounds(0.0F, 0.675F, 0.0F, 1.0F, 1.0F, 1.0F);
+	}
+	
+	public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z) {
+		this.setBlockBoundsForItemRender();
+		int meta = blockAccess.getBlockMetadata(x, y, z);
+		
+		switch(meta) {
+			case 0: this.setBlockBounds(0.0F, 0.675F, 0.0F, 1.0F, 1.0F, 1.0F); break;
+			case 1: this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.375F, 1.0F); break;
+			default: this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F); break;
+		}
+	}
+	
+	public boolean isOpaqueCube() {
+        return false;
+    }
+	
+	public void setBlockBoundsForItemRender() {
+//		this.setBlockBounds(0.0F, 0.3125F, 0.0F, 1.0F, 0.6875F, 1.0F);
 	}
 	
 	private void fall(World world, int x, int y, int z, Entity entity, ForgeDirection dir) {
@@ -23,9 +45,8 @@ public class BlockFallTrap extends HTSMBlock {
 	
 	        if (world.checkChunksExist(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius)) {
 	            if (!world.isRemote) {
-	                EntityFallingBlock entityfallingblock = new EntityFallingBlock(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), this, world.getBlockMetadata(x, y, z));
+	                EntityFallingBlock entityfallingblock = new EntityFallingBlock(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), this, 1);
 	                world.spawnEntityInWorld(entityfallingblock);
-	                
 	                world.setBlockMetadataWithNotify(x, y, z, 1, 2);
 	                
 	                Block north =  world.getBlock(x, y, z-1);
@@ -65,12 +86,10 @@ public class BlockFallTrap extends HTSMBlock {
 		
 		        if (world.checkChunksExist(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius)) {
 		            if (!world.isRemote) {
-		                EntityFallingBlock entityfallingblock = new EntityFallingBlock(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), this, world.getBlockMetadata(x, y, z));
+		                EntityFallingBlock entityfallingblock = new EntityFallingBlock(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), this, 1);
 		                world.spawnEntityInWorld(entityfallingblock);
 		                
 		                world.setBlockMetadataWithNotify(x, y, z, 1, 2);
-		                
-		                
 		                Block north =  world.getBlock(x, y, z-1);
 		                Block south =  world.getBlock(x, y, z+1);
 		                Block east =  world.getBlock(x+1, y, z);   
@@ -106,11 +125,9 @@ public class BlockFallTrap extends HTSMBlock {
 
         if (block.isAir(world, x, y, z)) {
             return true;
-        }
-        else if (block == Blocks.fire) {
+        } else if (block == Blocks.fire) {
             return true;
-        }
-        else {
+        } else {
             Material material = block.getMaterial();
             return material == Material.water ? true : material == Material.lava;
         }
