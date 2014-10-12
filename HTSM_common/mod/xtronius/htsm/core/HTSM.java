@@ -27,8 +27,8 @@ public class HTSM {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	
 	public static IProxy proxy;
-	public static HTSMBlockInitializer htsmBlock = HTSMBlockInitializer.instance;
-	public static HTSMItemInitializer htsmItem = HTSMItemInitializer.instance;
+	public static HTSMBlockInitializer htsmBlock = HTSMBlockInitializer.INSTANCE;
+	public static HTSMItemInitializer htsmItem = HTSMItemInitializer.INSTANCE;
 	
 	public static CreativeTabs tabItems = new CreativeTabHTSMItems(CreativeTabs.getNextID(), "HTSM Items");
 	public static CreativeTabs tabBlocks = new CreativeTabHTSMBlocks(CreativeTabs.getNextID(), "HTSM Blocks");
@@ -50,7 +50,7 @@ public class HTSM {
 		
 		new HTSMBlockInitializer();
 		new HTSMItemInitializer();
-		HTSMIDHandler.RegConfigIDs(event);
+		HTSMConfigHandler.inits(event.getSuggestedConfigurationFile());
 		
 		new HTSMEventInitializer();
     }   

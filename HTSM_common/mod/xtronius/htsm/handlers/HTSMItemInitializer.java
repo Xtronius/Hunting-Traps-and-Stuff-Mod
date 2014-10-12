@@ -16,10 +16,10 @@ public class HTSMItemInitializer {
 	public static ArrayList<String> itemNames = new ArrayList<String>();
 	public static HashMap<String, Item> items = new HashMap<String, Item>();
 	
-	public static HTSMItemInitializer instance;
+	public static HTSMItemInitializer INSTANCE;
 
 	public HTSMItemInitializer() {
-		instance = this;
+		INSTANCE = this;
 		init();
 	}
 	

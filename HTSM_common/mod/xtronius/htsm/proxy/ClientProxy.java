@@ -6,6 +6,7 @@ import mod.xtronius.htsm.entity.renderer.RenderBullet;
 import mod.xtronius.htsm.entity.renderer.model.ModelBullet;
 import mod.xtronius.htsm.item.renderer.RenderItemCage;
 import mod.xtronius.htsm.item.renderer.RenderItemSpike;
+import mod.xtronius.htsm.lib.ConfigValues;
 import mod.xtronius.htsm.lib.RenderTypes;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.tileEntity.TileEntityPlaque;

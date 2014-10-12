@@ -1,6 +1,7 @@
 package mod.xtronius.htsm.entity.renderer;
 
 import mod.xtronius.htsm.entity.renderer.model.ModelBullet;
+import mod.xtronius.htsm.lib.ConfigValues;
 import mod.xtronius.htsm.lib.Reference;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
@@ -39,7 +40,8 @@ public class RenderBullet extends Render {
 
   @Override
   public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTickTime) {
-    renderBullet(entity, x, y, z);
+	  if(ConfigValues.RenderBullet)
+		  renderBullet(entity, x, y, z);
   }
 
 

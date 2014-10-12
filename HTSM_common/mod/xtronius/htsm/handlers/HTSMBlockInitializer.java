@@ -19,10 +19,10 @@ public class HTSMBlockInitializer {
 	public static ArrayList<String> blockNames = new ArrayList<String>();
 	public static HashMap<String, Block> blocks = new HashMap<String, Block>();
 	
-	public static HTSMBlockInitializer instance;
+	public static HTSMBlockInitializer INSTANCE;
 
 	public HTSMBlockInitializer() {
-		instance = this;
+		INSTANCE = this;
 		init();
 	}
 	
