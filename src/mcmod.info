@@ -1,0 +1,16 @@
+[
+{
+  "modid": "HTSM",
+  "name": "Hunting Traps and Stuf Mod",
+  "description": " This mod adds all sorts of blocks and items, and possibly add mobs/animal in the future, that help add a hunting aspects to your ordinary Minecraft world",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Xtronius_"],
+  "credits": "Xtronius_",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

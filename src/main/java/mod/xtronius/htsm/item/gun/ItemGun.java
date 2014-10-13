@@ -2,6 +2,7 @@ package mod.xtronius.htsm.item.gun;
 
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.entity.EntityBullet;
+import mod.xtronius.htsm.lib.ConfigValues;
 import mod.xtronius.htsm.lib.Reference;
 import mod.xtronius.htsm.util.ItemHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +25,8 @@ public class ItemGun extends Item {
   public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityPlayer player, int i) {
 	  
     if (itemstack.getItemDamage() < gun.getRounds()) {
-      world.playSoundAtEntity(player, Reference.MOD_ASSET + ":" + gun.getShootSound(), 1.0F, 1.0F);
+    	if(ConfigValues.PlayGunFireSound)
+    		world.playSoundAtEntity(player, Reference.MOD_ASSET + ":" + gun.getShootSound(), 1.0F, 1.0F);
       itemstack.damageItem(1, player);
       gun.fireGun(world, player, gun.getDamage());
         
@@ -34,6 +36,7 @@ public class ItemGun extends Item {
       f1 = (f1 * f1 + f1 * 2.0F) / 1.5F;
       if (f1 >= 1.0F) {
         itemstack.setItemDamage(0);
+        if(ConfigValues.PlayGunReloadSound)
         world.playSoundAtEntity(player, Reference.MOD_ASSET + ":" + gun.getReloadSound(), 1.0F, 1.0F);
         player.inventory.consumeInventoryItem(gun.getAmmo());
       }

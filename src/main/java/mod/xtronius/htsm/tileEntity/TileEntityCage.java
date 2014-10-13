@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.handlers.PacketHandler;
+import mod.xtronius.htsm.lib.ConfigValues;
 import mod.xtronius.htsm.packet.PacketCageData;
 import mod.xtronius.htsm.tileEntity.renderer.model.ModelCage;
 import net.minecraft.block.Block;
@@ -39,6 +40,10 @@ public class TileEntityCage extends TickingTileEntity implements IInventory, ITi
 	private int captureRange = 3;
 	
 	public ModelCage model = new ModelCage();
+	
+	public TileEntityCage() {
+		this.seconds = ConfigValues.cageUpdateRefreshRate;
+	}
 	
 	protected void intervalUpdate() {
 		if(!this.worldObj.isRemote) {

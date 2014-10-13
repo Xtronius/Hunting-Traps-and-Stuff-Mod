@@ -1,5 +1,6 @@
 package mod.xtronius.htsm.entity;
 
+import mod.xtronius.htsm.lib.ConfigValues;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -106,13 +107,15 @@ public class EntityBullet extends EntityThrowable {
     	  movingObjectPosition.entityHit.hurtResistantTime = 0;
     	  movingObjectPosition.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, shootingEntity), var2);
     	  
-    	  if(!movingObjectPosition.entityHit.isDead) {
-	    	  for(int i = 0; i < movingObjectPosition.entityHit.width; i++) {
-	    		  for(int j = 0; j < movingObjectPosition.entityHit.height; j++) {
-	    			  this.worldObj.playAuxSFX(2001, (int) movingObjectPosition.entityHit.posX, (int) movingObjectPosition.entityHit.posY+j, (int) movingObjectPosition.entityHit.posZ, Block.getIdFromBlock(Blocks.redstone_wire)  + (0 << 12));
-	    		  }
-	    	  }
-      	  }
+    	  if(ConfigValues.RenderBlood) {
+	    	  if(!movingObjectPosition.entityHit.isDead) {
+		    	  for(int i = 0; i < movingObjectPosition.entityHit.width; i++) {
+		    		  for(int j = 0; j < movingObjectPosition.entityHit.height; j++) {
+		    			  this.worldObj.playAuxSFX(2001, (int) movingObjectPosition.entityHit.posX, (int) movingObjectPosition.entityHit.posY+j, (int) movingObjectPosition.entityHit.posZ, Block.getIdFromBlock(Blocks.redstone_wire)  + (0 << 12));
+		    		  }
+		    	  }
+	      	  }
+    	  }
     	  this.worldObj.playSoundAtEntity(this.shootingEntity, "random.successful_hit", 1.0F, 1.0F);
     	  this.setDead();
       }
@@ -150,11 +153,12 @@ public class EntityBullet extends EntityThrowable {
     	  this.setDead();
       } 
       else if (block != Blocks.air){
-    	  int l = this.worldObj.getBlockMetadata(movingObjectPosition.blockX, movingObjectPosition.blockY, movingObjectPosition.blockZ);
-          this.worldObj.playAuxSFX(2001, movingObjectPosition.blockX, movingObjectPosition.blockY, movingObjectPosition.blockZ, Block.getIdFromBlock(block) + (l << 12));
+    	  if(ConfigValues.RenderBlockHitParticles) {
+    		int l = this.worldObj.getBlockMetadata(movingObjectPosition.blockX, movingObjectPosition.blockY, movingObjectPosition.blockZ);
+          	this.worldObj.playAuxSFX(2001, movingObjectPosition.blockX, movingObjectPosition.blockY, movingObjectPosition.blockZ, Block.getIdFromBlock(block) + (l << 12));
+    	  }
+          this.setDead();
       } else {
-        String stepsound = block.stepSound.getBreakSound();
-        this.worldObj.playSoundAtEntity(this, stepsound, 0.25F, 1.0F);
         this.setDead();
       }
     }

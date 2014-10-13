@@ -1,9 +1,11 @@
 package mod.xtronius.htsm.tileEntity;
 
 import java.util.ArrayList;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.handlers.PacketHandler;
+import mod.xtronius.htsm.lib.ConfigValues;
 import mod.xtronius.htsm.packet.PacketCageData;
 import mod.xtronius.htsm.packet.PacketPlaqueData;
 import mod.xtronius.htsm.tileEntity.renderer.model.ModelPlaque;
@@ -26,14 +28,13 @@ public class TileEntityPlaque extends TickingTileEntity implements IInventory{
 	private ItemStack[] invContents = new ItemStack[1];
 	
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
-	}
-	
-	@Override
 	public boolean canUpdate() {
         return true;
     }
+	
+	public TileEntityPlaque() {
+		this.seconds = ConfigValues.plaqueUpdateRefreshRate;
+	}
 	
 	@Override
 	protected void intervalUpdate() {

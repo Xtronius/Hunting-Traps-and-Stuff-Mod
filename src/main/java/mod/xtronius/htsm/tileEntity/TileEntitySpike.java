@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import mod.xtronius.htsm.core.HTSM;
 import mod.xtronius.htsm.handlers.PacketHandler;
+import mod.xtronius.htsm.lib.ConfigValues;
 import mod.xtronius.htsm.packet.PacketSpikeData;
 import mod.xtronius.htsm.util.UpgradeHelper;
 import net.minecraft.block.Block;
@@ -26,6 +27,10 @@ public class TileEntitySpike extends TickingTileEntity implements IInventory, IT
 	private ForgeDirection orientation = ForgeDirection.UP;
 	private ItemStack[] invContents = new ItemStack[1];
 	private ItemStack[] upgradeInvContents = new ItemStack[1];
+	
+	public TileEntitySpike() {
+		this.seconds = ConfigValues.spikeUpdateRefreshRate;
+	}
 	
 	protected void intervalUpdate() {
 		

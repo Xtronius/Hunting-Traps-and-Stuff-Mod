@@ -5,7 +5,7 @@ public class Reference {
     /**
      *	The mod id
      */
-    public static final String MOD_ID = "htsm";
+    public static final String MOD_ID = "HTSM";
     
     /**
      *	The mod name
@@ -26,6 +26,11 @@ public class Reference {
      * 	The client specific proxy class for the mod
      */
     public static final String CLIENT_PROXY_CLASS = "mod.xtronius.htsm.proxy.ClientProxy";
+    
+    /**
+     * 	The client specific proxy class for the mod
+     */
+    public static final String GUI_FACTORY_CLASS = "mod.xtronius.htsm.gui.GuiFactory";
     /**
      * 	The Creative Tab id for Metals
      */
@@ -38,4 +43,6 @@ public class Reference {
      * 	The String for gui textures
      */
     public static final String MOD_ASSET = "htsm";
+    
+    public static final String MOD_OPTIONS = "mod-options";
 }

@@ -1,5 +1,6 @@
 package mod.xtronius.htsm.tileEntity.renderer;
 
+import mod.xtronius.htsm.lib.ConfigValues;
 import mod.xtronius.htsm.lib.Reference;
 import mod.xtronius.htsm.tileEntity.TileEntityCage;
 import mod.xtronius.htsm.tileEntity.renderer.model.ModelCage;
@@ -44,6 +45,8 @@ public class RenderCage extends TileEntitySpecialRenderer{
 		
 		this.bindTexture(texture);
 		
+		if(ConfigValues.RenderCageGateAnimation) {
+		
 			if(!tileEntityCage.isCageClosed()) {
 				this.openCageGate(tileEntityCage.model, tileEntityCage.model.GateBackTop);
 				this.openCageGate(tileEntityCage.model, tileEntityCage.model.GateFrontTop);
@@ -55,6 +58,7 @@ public class RenderCage extends TileEntitySpecialRenderer{
 				this.closeCageGate(tileEntityCage.model.GateLeftTop);
 				this.closeCageGate(tileEntityCage.model.GateRightTop);
 			}
+		}
 		
 		
 			tileEntityCage.model.renderModel(0.0625F);
@@ -72,7 +76,8 @@ public class RenderCage extends TileEntitySpecialRenderer{
 					RenderItem.renderInFrame = true;
 			
 					GL11.glTranslated(0.0f, 1.375F, 0.0f);
-					GL11.glRotatef((Sys.getTime()%188743680)/10, 0, 1, 0);
+					if(ConfigValues.RenderCageEntityRotationAnimation)
+						GL11.glRotatef((Sys.getTime()%188743680)/10, 0, 1, 0);
 					GL11.glRotatef(180, 0, 0, 1);
 					GL11.glScalef(1.0f, 1.0f, 1.0f);
 					
